@@ -18,8 +18,8 @@ module LinkedData
       yield @settings if block_given?
 
       # Set defaults
-      # @settings.rest_url ||= "http://stagedata.bioontology.org/"
-      @settings.rest_url   ||= "http://localhost:9393/"
+      @settings.rest_url   ||= "http://stagedata.bioontology.org/"
+      # @settings.rest_url   ||= "http://localhost:9393/"
       @settings.api_key    ||= "24e0e77e-54e0-11e0-9d7b-005056aa3316"
       @settings.links_attr ||= "links"
       @settings.cache      ||= false
