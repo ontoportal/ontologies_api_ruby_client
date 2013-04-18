@@ -195,9 +195,9 @@ module LinkedData
         end
         
         def children
-          if @children.nil?
-            return self.explore.children.collection
-          end
+          # if @children.nil?
+          #   return self.explore.children.collection
+          # end
           @children
         end
         

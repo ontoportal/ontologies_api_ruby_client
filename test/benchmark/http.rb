@@ -37,5 +37,5 @@ benchmark.public_methods(false).each do |method|
   time = ::Benchmark.realtime do
     benchmark.send(method)
   end
-  puts "Time elapsed #{time*1000} milliseconds"
+  puts "#{method}: #{time*1000}ms"
 end
