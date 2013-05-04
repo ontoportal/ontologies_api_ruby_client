@@ -43,13 +43,13 @@ Resources that should have save, update, and delete methods will need to include
 
 There are multiple ways to retrieve individual or groups of resources.
 
-#### Find
+***Find***
 
 To retrieve a single record by id:
 
     Category.find("http://data.bioontology.org/categories/all_organisms")
 
-#### Where
+***Where***
 
 To retrieve all records that match a particular an in-code filter. The code is a block that should return a 
 boolean that indicates whether or not the item should be included in the results.
@@ -58,7 +58,7 @@ boolean that indicates whether or not the item should be included in the results
       ont.name.include?("health")
     end
     
-#### Find By
+***Find By***
 
 You can use shortcut methods to find by particular attribute/value pairs
 (attributes are named in the method and multiple can be provided by connecting them with 'and').
