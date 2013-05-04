@@ -10,12 +10,11 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.name          = "ontologies_api_client"
   gem.require_paths = ["lib"]
-  gem.version       = "0.0.1"
+  gem.version       = "0.0.2"
 
   gem.add_dependency('multi_json')
   gem.add_dependency('oj')
   gem.add_dependency('faraday')
-  # gem.add_dependency('faraday-http-cache')
   gem.add_dependency('typhoeus')
 
   # gem.executables = %w()
