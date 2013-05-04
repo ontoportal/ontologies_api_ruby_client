@@ -56,7 +56,12 @@ module LinkedData
             bools = []
             attributes.each_with_index do |attr, index|
               if obj.respond_to?(attr)
-                bools << (obj.send(attr) == args[index])
+                value = obj.send(attr)
+                if value.is_a?(Enumerable)
+                  bools << value.include?(args[index])
+                else
+                  bools << (value == args[index])
+                end
               end
             end
             bools.all?
