@@ -17,27 +17,8 @@ Configuration is provided by calling the <code>config</code> method
     
 ## Usage
 
-The client is designed to consume resources from the [NCBO Ontologies API](https://github.com/ncbo/ontologies_api). 
-Resources are defined in the client using media types that we know about and
-providing attribute names that we want to retreive for each media type.
-
-For example:
-
-    class Category < LinkedData::Client::Base
-      include LinkedData::Client::Collection
-      @media_type = "http://data.bioontology.org/metadata/Category"
-    end
-
-### Collections
-
-Resources that are available via collections should include the Collection mixin (LinkedData::Client::Collection).
-By 'collection', we mean that the all resources are available at a single endpoint.
-For example, 'Ontology' is a resource with collections because you can see all ontologgies
-at the "/ontologies" URL.
-
-### Read/Write
-
-Resources that should have save, update, and delete methods will need to include the ReadWrite mixin (LinkedData::Client::ReadWrite).
+Once configured, you can utilize the existing resources that are defined (see <code>lib/ontologies_api_client/models</code>)
+to access a resource, its information, and related resources.
 
 ### Retrieval
 
@@ -65,6 +46,43 @@ You can use shortcut methods to find by particular attribute/value pairs
 
     categories = Category.find_by_parentCategory("http://data.bioontology.org/categories/anatomy")
     
+## Hypermedia Navigation
+
+All resources have a collection of hypermedia links, available by calling the 'links' method.
+These links can be navigated by calling the 'explore' method and chaining the link:
+
+    ontology = Category.find("http://data.bioontology.org/categories/all_organisms")
+    classes = ontology.explore.classes
+    
+Links may contain a [URI template](http://tools.ietf.org/html/rfc6570). In this case, the template can be
+populated by passing in ordered values for the template tokens:
+
+    cls = ontology.explore.single_class("http://my.class.id/class1")
+
+## Defining Resources
+
+The client is designed to consume resources from the [NCBO Ontologies API](https://github.com/ncbo/ontologies_api). 
+Resources are defined in the client using media types that we know about and
+providing attribute names that we want to retreive for each media type.
+
+For example:
+
+    class Category < LinkedData::Client::Base
+      include LinkedData::Client::Collection
+      @media_type = "http://data.bioontology.org/metadata/Category"
+    end
+
+### Collections
+
+Resources that are available via collections should include the Collection mixin (LinkedData::Client::Collection).
+By 'collection', we mean that the all resources are available at a single endpoint.
+For example, 'Ontology' is a resource with collections because you can see all ontologgies
+at the "/ontologies" URL.
+
+### Read/Write
+
+Resources that should have save, update, and delete methods will need to include the ReadWrite mixin (LinkedData::Client::ReadWrite).
+
 ## Questions
 
 For questions please email [support@bioontology.org](support@bioontology.org.)
