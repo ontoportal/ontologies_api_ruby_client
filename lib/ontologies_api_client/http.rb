@@ -78,7 +78,7 @@ module LinkedData
       end
       
       def self.prep_links(obj)
-        links = obj.delete("links")
+        links = obj.delete(LinkedData::Client.settings.links_attr)
         return if links.nil?
         
         context = links.delete("@context")
