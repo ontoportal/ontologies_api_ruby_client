@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ontologies_api_client (0.0.1)
+    ontologies_api_client (0.0.2)
       faraday
       multi_json
       oj
@@ -19,7 +19,8 @@ GEM
     mime-types (1.22)
     multi_json (1.7.2)
     multipart-post (1.2.0)
-    oj (2.0.10)
+    oj (2.0.11)
+    rake (10.0.4)
     typhoeus (0.6.3)
       ethon (~> 0.5.11)
 
@@ -28,3 +29,4 @@ PLATFORMS
 
 DEPENDENCIES
   ontologies_api_client!
+  rake
