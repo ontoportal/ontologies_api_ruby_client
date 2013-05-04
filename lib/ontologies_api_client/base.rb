@@ -6,7 +6,7 @@ module LinkedData
       attr_accessor :context, :links
       
       class << self
-        attr_accessor :media_type, :class_for_type_attrs
+        attr_accessor :media_type, :include_attrs
       end
       
       def self.class_for_type(media_type)

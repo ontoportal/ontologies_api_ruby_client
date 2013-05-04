@@ -7,7 +7,7 @@ module LinkedData
         require 'cgi'
         HTTP = LinkedData::Client::HTTP
         @media_type = "http://www.w3.org/2002/07/owl#Class"
-        @class_for_type_attrs = "prefLabel,definition,synonym,properties,childrenCount,children"
+        @include_attrs = "prefLabel,definition,synonym,properties,childrenCount,children"
   
         attr_accessor :parent
         alias :fullId :id
