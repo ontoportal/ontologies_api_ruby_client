@@ -4,7 +4,7 @@ module LinkedData
   module Client
     module Models
       class OntologySubmission < LinkedData::Client::Base
-        class_for_type LinkedData::Client::Collection
+        include LinkedData::Client::Collection
         @media_type = "http://data.bioontology.org/metadata/OntologySubmission"
         @include_attrs    = "all"
       end

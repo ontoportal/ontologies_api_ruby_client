@@ -32,7 +32,7 @@ module LinkedData
         link = @links[args.shift.to_s]
         url = replace_template_elements(link.to_s, args)
         value_cls = LinkedData::Client::Base.class_for_type(link.media_type)
-        params = {class_for_type: value_cls.include_attrs}
+        params = {includes: value_cls.include_attrs}
         HTTP.get(url, params)
       end
       

@@ -5,7 +5,7 @@ module LinkedData
   module Client
     module Models
       class Ontology < LinkedData::Client::Base
-        class_for_type LinkedData::Client::Collection
+        include LinkedData::Client::Collection
   
         @media_type = "http://data.bioontology.org/metadata/Ontology"
         @include_attrs    = "all"

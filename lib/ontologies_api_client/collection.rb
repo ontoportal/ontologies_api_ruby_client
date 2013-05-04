@@ -5,7 +5,7 @@ module LinkedData
   module Client
     module Collection
       
-      def self.class_for_typed(base)
+      def self.included(base)
         base.extend(ClassMethods)
       end
 
