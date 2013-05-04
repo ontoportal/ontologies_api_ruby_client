@@ -10,6 +10,11 @@ module LinkedData
       end
 
       module ClassMethods
+
+        ##
+        # Allows for arbitrary find_by methods. For example:
+        #   Ontology.find_by_acronym("BRO")
+        #   Ontology.find_by_group_and_category("BRO", DateTime.parse(Time.now))
         def method_missing(meth, *class_for_typeblock)
           if meth.to_s =~ /^find_by_(.+)$/
             find_by($1, *args, &block)
@@ -18,23 +23,34 @@ module LinkedData
           end
         end
       
+        ##
+        # Get all top-level links for the API
         def top_level_links
           HTTP.get(LinkedData::Client.settings.rest_url)
         end
       
+        ##
+        # Return a link given an object (with links) and a media type
         def uri_from_context(object, media_type)
           object.links.each do |type, link|
             return link if link.media_type && link.media_type.downcase.eql?(media_type.downcase)
           end
         end
       
+        ##
+        # Get the first collection of resources for a given type
         def entry_point(media_type)
           HTTP.get(uri_from_context(top_level_links, media_type), include: @include_attrs)
         end
       
+        ##
+        # Get all resources from the base collection for a resource
         def all(*args)
           entry_point(@media_type)
         end
+        
+        ##
+        # Find certain resources from the collection by passing a block that filters results
         def where(params = {}, &block)
           if block_given?
             return all.select {|e| block.call(e)}
@@ -43,6 +59,8 @@ module LinkedData
           end
         end
       
+        ##
+        # Find a resource by id
         def find(id, params = {})
           found = where do |obj|
             obj.send("@id").eql?(id)
@@ -50,6 +68,8 @@ module LinkedData
           found.first
         end
       
+        ##
+        # Find a resource by a combination of attributes
         def find_by(attrs, *args)
           attributes = attrs.split("_and_")
           where do |obj|
