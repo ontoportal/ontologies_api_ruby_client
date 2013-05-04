@@ -28,6 +28,17 @@ For example:
       @media_type = "http://data.bioontology.org/metadata/Category"
     end
 
+### Collections
+
+Resources that are available via collections should include the Collection mixin (LinkedData::Client::Collection).
+By 'collection', we mean that the all resources are available at a single endpoint.
+For example, 'Ontology' is a resource with collections because you can see all ontologgies
+at the "/ontologies" URL.
+
+### Read/Write
+
+Resources that should have save, update, and delete methods will need to include the ReadWrite mixin (LinkedData::Client::ReadWrite).
+
 ### Retrieval
 
 There are multiple ways to retrieve individual or groups of resources.
