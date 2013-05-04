@@ -20,7 +20,7 @@ module LinkedData
       # Set defaults
       @settings.rest_url   ||= "http://stagedata.bioontology.org/"
       # @settings.rest_url   ||= "http://localhost:9393/"
-      @settings.api_key    ||= "4ea81d74-8960-4525-810b-fa1baab576ff"
+      @settings.apikey     ||= "4ea81d74-8960-4525-810b-fa1baab576ff"
       @settings.links_attr ||= "links"
       @settings.cache      ||= false
       
@@ -38,7 +38,7 @@ module LinkedData
         end
         faraday.headers = {
           "Accept" => "application/json",
-          "Authorization" => "apikey token=#{@settings.api_key}",
+          "Authorization" => "apikey token=#{@settings.apikey}",
           "User-Agent" => "NCBO API Ruby Client v0.1.0"
         }
       end
