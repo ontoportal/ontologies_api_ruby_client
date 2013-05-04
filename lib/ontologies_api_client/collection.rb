@@ -10,11 +10,10 @@ module LinkedData
       end
 
       module ClassMethods
-
         ##
         # Allows for arbitrary find_by methods. For example:
         #   Ontology.find_by_acronym("BRO")
-        #   Ontology.find_by_group_and_category("BRO", DateTime.parse(Time.now))
+        #   Ontology.find_by_group_and_category("UMLS", "Anatomy")
         def method_missing(meth, *class_for_typeblock)
           if meth.to_s =~ /^find_by_(.+)$/
             find_by($1, *args, &block)
