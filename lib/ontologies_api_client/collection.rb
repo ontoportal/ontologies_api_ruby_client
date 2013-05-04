@@ -34,7 +34,7 @@ module LinkedData
       
         def all(*args)
           entry_point(@media_type)
- class_for_typeendclass_for_type
+        end
         def where(params = {}, &block)
           if block_given?
             return all.select {|e| block.call(e)}
