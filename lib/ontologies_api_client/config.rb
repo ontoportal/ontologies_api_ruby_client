@@ -19,7 +19,6 @@ module LinkedData
 
       # Set defaults
       @settings.rest_url   ||= "http://stagedata.bioontology.org/"
-      # @settings.rest_url   ||= "http://localhost:9393/"
       @settings.apikey     ||= "4ea81d74-8960-4525-810b-fa1baab576ff"
       @settings.links_attr ||= "links"
       @settings.cache      ||= false
