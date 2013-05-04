@@ -3,6 +3,17 @@
 ## Install
 
     gem install ontologies_api_client
+
+## Configuration
+
+Configuration is provided by calling the <code>config</code> method
+
+    LinkedData::Client.config do |config|
+      config.rest_url   ||= "http://stagedata.bioontology.org/"
+      config.apikey     ||= "your_apikey"
+      config.links_attr ||= "links"
+      config.cache      ||= false
+    end
     
 ## Usage
 
@@ -23,7 +34,9 @@ There are multiple ways to retrieve individual or groups of resources.
 
 #### Find
 
-To retrieve a single record by id: <code>Category.find("http://data.bioontology.org/categories/all_organisms")</code>
+To retrieve a single record by id:
+
+    Category.find("http://data.bioontology.org/categories/all_organisms")
 
 #### Where
 
