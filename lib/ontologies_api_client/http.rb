@@ -54,7 +54,7 @@ module LinkedData
       def self.rucursive_struct(json_obj)
         # TODO: Convert dates to date objects
         if json_obj.is_a?(Hash)
-          value_cls = LinkedData::Client::Base.object_for_type(json_obj["@type"])
+          value_cls = LinkedData::Client::Base.class_for_type(json_obj["@type"])
           links = prep_links(json_obj)
           context = json_obj.delete("@context")
           obj_cls = cls_for_keys(json_obj.keys.map {|k| k.to_sym})
