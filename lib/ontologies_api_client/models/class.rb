@@ -22,6 +22,14 @@ module LinkedData
           ontology.explore.class(CGI.escape(id))
         end
         
+        def self.search(*args)
+          query = args.shift
+          params = args.shift
+          params[:q] = query
+          raise ArgumentError, "You must provide a search query: Class.search(query: 'melanoma')" if query.nil? || !query.is_a?(String)
+          HTTP.get("/search", params)
+        end
+        
         def expanded?
           !self.children.nil? && self.children.length > 0
         end
