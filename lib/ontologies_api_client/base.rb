@@ -6,9 +6,20 @@ module LinkedData
       attr_accessor :context, :links
       
       class << self
-        attr_accessor :media_type, :include_attrs
+        attr_accessor :media_type, :include_attrs, :include_attrs_full, :attrs_always_present
       end
       
+      ##
+      # Passing full: true to explore methods will give you more attributes
+      def self.attributes(*args)
+        options = args.pop || {}
+        if options[:full] && @include_attrs_full
+          @include_attrs_full
+        else
+          @include_attrs
+        end
+      end
+
       def self.class_for_type(media_type)
         classes = LinkedData::Client::Models.constants
         classes.each do |cls|

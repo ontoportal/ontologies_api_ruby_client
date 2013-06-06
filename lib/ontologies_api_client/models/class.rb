@@ -7,9 +7,10 @@ module LinkedData
         require 'cgi'
         HTTP = LinkedData::Client::HTTP
         @media_type = "http://www.w3.org/2002/07/owl#Class"
-        @include_attrs = "prefLabel,definition,synonym,properties,childrenCount,children"
+        @include_attrs = "prefLabel,definition,synonym,childrenCount"
+        @include_attrs_full = "prefLabel,definition,synonym,properties,childrenCount,children"
+        @attrs_always_present = :prefLabel, :definition, :synonym, :properties, :childrenCount, :children
   
-        attr_accessor :parent
         alias :fullId :id
   
         # TODO: Implement properly
@@ -20,20 +21,9 @@ module LinkedData
           ontology = HTTP.get(ontology, params)
           ontology.explore.class(CGI.escape(id))
         end
-  
+        
         def expanded?
-          !children.nil? && children.length > 0
-        end
-  
-        def children
-          # if @children.nil?
-          #   return self.explore.children.collection
-          # end
-          @children
-        end
-  
-        def children=(children)
-          @children = children
+          !self.children.nil? && self.children.length > 0
         end
   
       end
