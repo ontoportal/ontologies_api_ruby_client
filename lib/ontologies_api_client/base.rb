@@ -29,8 +29,16 @@ module LinkedData
         nil
       end
 
-      def initialize(values = nil)
+      def initialize(options = {})
+        values = options[:values]
+        read_only = options[:read_only] || false
         @instance_values = values
+        if read_only && self.class.attrs_always_present
+          self.class.attrs_always_present.each do |attr|
+            define_singleton_method(attr, lambda {instance_variable_get("@#{attr}")})
+            define_singleton_method("#{attr}=", lambda {|val| instance_variable_set("@#{attr}", val)})
+          end
+        end
       end
 
       def method_missing(meth, *args, &block)
