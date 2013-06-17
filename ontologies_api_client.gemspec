@@ -13,7 +13,7 @@ Gem::Specification.new do |gem|
   gem.version       = "0.0.2"
 
   gem.add_dependency('multi_json')
-  gem.add_dependency('oj')
+  gem.add_dependency('oj', '<= 2.0.14')
   gem.add_dependency('faraday')
   gem.add_dependency('typhoeus')
 
