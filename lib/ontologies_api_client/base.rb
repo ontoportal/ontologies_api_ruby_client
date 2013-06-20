@@ -11,8 +11,8 @@ module LinkedData
       
       ##
       # Passing full: true to explore methods will give you more attributes
-      def self.attributes(*args)
-        options = args.pop || {}
+      def self.attributes(options = nil)
+        options ||= {}
         if options[:full] && @include_attrs_full
           @include_attrs_full
         else
@@ -57,6 +57,10 @@ module LinkedData
         end
       end
       
+      ##
+      # Retrieve a set of data using a link provided on an object
+      # This instantiates an instance of this class and uses
+      # method missing to determine which link to follow
       def explore
         LinkedData::Client::LinkExplorer.new(@links)
       end
