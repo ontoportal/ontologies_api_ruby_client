@@ -54,7 +54,7 @@ module LinkedData
           if block_given?
             return all.select {|e| block.call(e)}
           else
-            raise ArgumentException("Must provide a block to find ontologies")
+            raise ArgumentException("Must provide a block to find items")
           end
         end
       
@@ -62,7 +62,7 @@ module LinkedData
         # Find a resource by id
         def find(id, params = {})
           found = where do |obj|
-            obj.send("@id").eql?(id)
+            obj.id.eql?(id) rescue binding.pry
           end
           found.first
         end
