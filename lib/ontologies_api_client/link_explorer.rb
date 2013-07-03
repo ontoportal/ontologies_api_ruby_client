@@ -30,7 +30,11 @@ module LinkedData
       
       def explore_link(*args)
         link = @links[args.shift.to_s]
-        params = args.shift || {}
+        params = args.shift
+        unless params.is_a?(Hash)
+          args.push(params)
+          params = {}
+        end
         full_attributes = params.delete(:full)
         url = replace_template_elements(link.to_s, args)
         value_cls = LinkedData::Client::Base.class_for_type(link.media_type)
