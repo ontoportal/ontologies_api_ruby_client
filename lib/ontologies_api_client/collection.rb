@@ -66,6 +66,12 @@ module LinkedData
           end
           found.first
         end
+        
+        ##
+        # Get a resource by id (this will retrieve it from the REST service)
+        def get(id, params = {})
+          HTTP.get(id, params)
+        end
       
         ##
         # Find a resource by a combination of attributes
