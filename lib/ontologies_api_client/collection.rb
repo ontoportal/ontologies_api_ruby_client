@@ -41,6 +41,12 @@ module LinkedData
         def entry_point(media_type)
           HTTP.get(uri_from_context(top_level_links, media_type), include: @include_attrs)
         end
+        
+        ##
+        # For a type that is already defined, get the collection path
+        def collection_path
+          uri_from_context(top_level_links, @media_type)
+        end
       
         ##
         # Get all resources from the base collection for a resource

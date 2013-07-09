@@ -11,9 +11,8 @@ module LinkedData
       
       ##
       # Passing full: true to explore methods will give you more attributes
-      def self.attributes(options = nil)
-        options ||= {}
-        if options[:full] && @include_attrs_full
+      def self.attributes(full = false)
+        if full && @include_attrs_full
           @include_attrs_full
         else
           @include_attrs
@@ -30,9 +29,9 @@ module LinkedData
       end
 
       def initialize(options = {})
-        values = options[:values]
-        read_only = options[:read_only] || false
-        @instance_values = values
+        read_only = options.delete(:read_only) || false
+        values = options
+        @instance_values = values[:values] || values
         if read_only && self.class.attrs_always_present
           self.class.attrs_always_present.each do |attr|
             define_singleton_method(attr, lambda {instance_variable_get("@#{attr}")})
@@ -67,6 +66,10 @@ module LinkedData
       
       def id
         @instance_values["@id"]
+      end
+      
+      def to_hash
+        (@instance_values || {}).to_hash
       end
       
     end

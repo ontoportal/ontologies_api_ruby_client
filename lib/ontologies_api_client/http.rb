@@ -43,16 +43,33 @@ module LinkedData
         return *responses
       end
       
-      def self.post
+      def self.post(path, obj)
+        conn.post do |req|
+          req.url path
+          req.headers['Content-Type'] = 'application/json'
+          req.body = obj.to_json
+        end
       end
       
-      def self.put
+      def self.put(path, obj)
+        conn.put do |req|
+          req.url path
+          req.headers['Content-Type'] = 'application/json'
+          req.body = obj.to_json
+        end
       end
       
-      def self.patch
+      def self.patch(path, params)
+        conn.put do |req|
+          req.url path
+          req.headers['Content-Type'] = 'application/json'
+          req.body = params.to_json
+        end
       end
       
-      def self.delete
+      def self.delete(id)
+        puts "Deleting #{id}"
+        conn.delete id
       end
       
       private

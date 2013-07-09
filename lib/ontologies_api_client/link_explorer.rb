@@ -35,15 +35,18 @@ module LinkedData
           args.push(params)
           params = {}
         end
+        replacements = args.shift
         full_attributes = params.delete(:full)
-        url = replace_template_elements(link.to_s, args)
+        url = replace_template_elements(link.to_s, replacements)
         value_cls = LinkedData::Client::Base.class_for_type(link.media_type)
         params[:include] = value_cls.attributes(full_attributes)
         HTTP.get(url, params)
       end
       
       def replace_template_elements(url, values = [])
-        return url if values.empty?
+        return url if values.nil? || values.empty?
+        values = values.dup
+        values = [values] unless values.is_a?(Array)
         return url.gsub(/(\{.*?\})/) do
           CGI.escape(values.shift)
         end
