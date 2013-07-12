@@ -6,10 +6,8 @@ module LinkedData
   module Client
     module HTTP
       class Link < String; attr_accessor :media_type; end
-      
+
       OBJ_CACHE = {}
-      GET_CACHE = {}
-      ENABLE_CACHE = true
       
       def self.conn
         LinkedData::Client.settings.conn
@@ -19,15 +17,13 @@ module LinkedData
         params = params.delete_if {|k,v| v == nil || v.to_s.empty?}
         
         begin
-          if ENABLE_CACHE && GET_CACHE[[path, params].hash]
-            obj = GET_CACHE[[path, params].hash]
-          else
-            puts "Getting: #{path} with #{params}"
-            response = conn.get path, params
-            body = response.body
-            obj = rucursive_struct(load_json(body))
-            GET_CACHE[[path, params].hash] = obj if response.status < 400 && ENABLE_CACHE
-          end
+          puts "Getting: #{path} with #{params}"
+          response = conn.get path, params
+          response = response.dup if response.frozen?
+          return response unless response.kind_of?(Faraday::Response)
+          
+          body = response.body
+          obj = recursive_struct(load_json(body))
         rescue Exception => e
           puts "Problem getting #{path}"
           raise e
@@ -44,26 +40,28 @@ module LinkedData
       end
       
       def self.post(path, obj)
-        conn.post do |req|
+        response = conn.post do |req|
           req.url path
           req.headers['Content-Type'] = 'application/json'
-          req.body = obj.to_json
+          req.body = MultiJson.dump(obj)
         end
+        recursive_struct(load_json(response.body))
       end
       
       def self.put(path, obj)
-        conn.put do |req|
+        response = conn.put do |req|
           req.url path
           req.headers['Content-Type'] = 'application/json'
-          req.body = obj.to_json
+          req.body = MultiJson.dump(obj)
         end
+        recursive_struct(load_json(response.body))
       end
       
       def self.patch(path, params)
         conn.put do |req|
           req.url path
           req.headers['Content-Type'] = 'application/json'
-          req.body = params.to_json
+          req.body = MultiJson.dump(params)
         end
       end
       
@@ -72,9 +70,13 @@ module LinkedData
         conn.delete id
       end
       
+      def self.object_from_json(json)
+        recursive_struct(load_json(json))
+      end
+      
       private
       
-      def self.rucursive_struct(json_obj)
+      def self.recursive_struct(json_obj)
         # TODO: Convert dates to date objects
         if json_obj.is_a?(Hash)
           value_cls = LinkedData::Client::Base.class_for_type(json_obj["@type"])
@@ -92,7 +94,7 @@ module LinkedData
           # Create objects for each key/value pair, recursively
           values = []
           json_obj.each do |key, value|
-            values << rucursive_struct(value)
+            values << recursive_struct(value)
           end
           
           # New instance using struct
@@ -107,7 +109,7 @@ module LinkedData
         elsif json_obj.is_a?(Array)
           obj = []
           json_obj.each do |value|
-            obj << rucursive_struct(value)
+            obj << recursive_struct(value)
           end
         else
           obj = value_cls ? value_cls.new(values: json_obj) : json_obj

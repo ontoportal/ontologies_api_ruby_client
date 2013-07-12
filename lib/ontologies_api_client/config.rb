@@ -24,17 +24,20 @@ module LinkedData
       @settings.cache      ||= false
       
       @settings.conn = Faraday.new(@settings.rest_url) do |faraday|
+        if @settings.cache
+          begin
+            require_relative 'middleware/faraday-object-cache'
+            faraday.use :object_cache
+            require 'faraday-http-cache'
+            faraday.use :http_cache, logger: Rails.logger, serializer: Marshal
+            puts "=> faraday caching enabled"
+          rescue LoadError
+            puts "=> WARNING: faraday http cache gem is not available, caching disabled"
+          end
+        end
         faraday.request :url_encoded
         faraday.request :multipart
         faraday.adapter :typhoeus
-        if @settings.cache
-          begin
-            require 'faraday-http-cache'
-            faraday.use :http_cache
-          rescue LoadError
-            puts "faraday-http-cache gem is not available, caching disabled"
-          end
-        end
         faraday.headers = {
           "Accept" => "application/json",
           "Authorization" => "apikey token=#{@settings.apikey}",
