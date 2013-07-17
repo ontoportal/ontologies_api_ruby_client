@@ -38,8 +38,9 @@ module LinkedData
       
         ##
         # Get the first collection of resources for a given type
-        def entry_point(media_type)
-          HTTP.get(uri_from_context(top_level_links, media_type), include: @include_attrs)
+        def entry_point(media_type, params = {})
+          params = {include: @include_attrs}.merge(params)
+          HTTP.get(uri_from_context(top_level_links, media_type), params)
         end
         
         ##
@@ -51,7 +52,8 @@ module LinkedData
         ##
         # Get all resources from the base collection for a resource
         def all(*args)
-          entry_point(@media_type)
+          params = args.shift || {}
+          entry_point(@media_type, params)
         end
         
         ##

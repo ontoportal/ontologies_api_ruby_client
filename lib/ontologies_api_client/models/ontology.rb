@@ -20,6 +20,7 @@ module LinkedData
         def purl
           "PURL not implemented"
         end
+        
       end
     end
   end
