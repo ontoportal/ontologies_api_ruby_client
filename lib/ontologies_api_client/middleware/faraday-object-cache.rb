@@ -19,12 +19,21 @@ module Faraday
           storage = @app.instance_variable_get("@storage")
           # Alter the cache request object for storing our parsed objects
           cache_request[:object_cached] = true
+          last_modified = requested_env[:response_headers]["Last-Modified"]
           key = storage.send(:cache_key_for, cache_request)
           if storage.cache.exist?(key)
-            return storage.cache.read(key)
+            stored_obj = storage.cache.read(key).dup
+            # Update if last modified is different
+            if stored_obj[:last_modified] != last_modified
+              puts "UPDATING CACHE #{requested_env[:url].to_s}"
+              stored_obj[:last_modified] = last_modified
+              storage.cache.write(key, stored_obj)
+            end
+            return stored_obj[:ld_obj]
           else
             ld_obj = LinkedData::Client::HTTP.object_from_json(requested_env[:body])
-            storage.cache.write(key, ld_obj)
+            stored_obj = {last_modified: last_modified, ld_obj: ld_obj}
+            storage.cache.write(key, stored_obj)
             return ld_obj
           end
         end
