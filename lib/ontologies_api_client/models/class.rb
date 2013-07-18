@@ -27,7 +27,7 @@ module LinkedData
           params = args.shift
           params[:q] = query
           raise ArgumentError, "You must provide a search query: Class.search(query: 'melanoma')" if query.nil? || !query.is_a?(String)
-          HTTP.get("/search", params)
+          HTTP.post("/search", params)
         end
         
         def expanded?
