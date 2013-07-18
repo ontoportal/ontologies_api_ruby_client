@@ -15,7 +15,7 @@ module LinkedData
         end
         
         def admin?
-          respond_to? :role && role.include?("ADMINISTRATOR")
+          respond_to?(:role) && role.include?("ADMINISTRATOR")
         end
       end
     end
