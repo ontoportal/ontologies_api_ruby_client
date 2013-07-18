@@ -45,6 +45,7 @@ module LinkedData
           req.headers['Content-Type'] = 'application/json'
           req.body = MultiJson.dump(obj)
         end
+        raise Exception, response.body if response.status >= 500
         recursive_struct(load_json(response.body))
       end
       
