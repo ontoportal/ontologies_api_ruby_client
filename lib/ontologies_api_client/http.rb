@@ -23,6 +23,7 @@ module LinkedData
           return response unless response.kind_of?(Faraday::Response)
           
           body = response.body
+          raise Exception, body if response.status >= 500
           obj = recursive_struct(load_json(body))
         rescue Exception => e
           puts "Problem getting #{path}"

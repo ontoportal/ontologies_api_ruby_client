@@ -30,7 +30,7 @@ module LinkedData
 
       def initialize(options = {})
         read_only = options.delete(:read_only) || false
-        values = options[:values] || options
+        values = options[:values]
         if values.is_a?(Hash) && !values.empty?
           values = Hash[values.map { |k,v| [k.to_sym, v] }]
           instance_values_cls = Struct.new(*values.keys)
@@ -49,17 +49,35 @@ module LinkedData
       def method_missing(meth, *args, &block)
         if @instance_values && @instance_values.respond_to?(meth)
           @instance_values.send(meth, *args, &block)
+        elsif meth.to_s[-1].eql?("=")
+          # This enables OpenStruct-like behavior for setting attributes that aren't defined
+          attr = meth.to_s.chomp("=").to_sym
+          attr_exists = self.public_methods(false).include?(attr)
+          unless attr_exists
+            self.class.class_eval do
+              define_method attr.to_sym do
+                instance_variable_get("@#{attr}")
+              end
+              define_method "#{attr}=" do |val|
+                instance_variable_set("@#{attr}", val)
+              end
+            end
+          end
+          instance_variable_set("@#{attr}", args.first)
         else
-          super
+          nil
         end
       end
       
       def respond_to?(meth)
-        if @instance_values && @instance_values.respond_to?(meth)
-          return true
-        else
-          super
-        end
+        return true
+        # if @instance_values && @instance_values.respond_to?(meth)
+        #   return true
+        # elsif meth.to_s[-1].eql?("=")
+        #   return true
+        # else
+        #   super
+        # end
       end
       
       ##
@@ -71,16 +89,27 @@ module LinkedData
       end
       
       def id
-        @instance_values["@id"]
+        @instance_values["@id"] || @id
+      end
+      
+      def type
+        @instance_values["@type"] || @type
       end
       
       def to_hash
         dump = marshal_dump
-        dump[0].merge(dump[1])
+        instance_values = dump[0] || {}
+        attributes = instance_values.merge(dump[1])
+        attributes.keys.each do |k|
+          next unless k.to_s[0].eql?("@")
+          attributes[k[1..-1].to_sym] = attributes[k]
+          attributes.delete(k)
+        end
+        attributes
       end
       
       def marshal_dump
-        instance_values = Hash[@instance_values.members.map { |v| [ v, @instance_values[v] ] }]
+        instance_values = Hash[@instance_values.members.map { |v| [ v, @instance_values[v] ] }] if @instance_values
         instance_variables = Hash[self.instance_variables.map { |v| [v, self.instance_variable_get("#{v}")] unless v == :@instance_values }]
         [instance_values, instance_variables]
       end
