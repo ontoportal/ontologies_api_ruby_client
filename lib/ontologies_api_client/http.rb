@@ -19,7 +19,7 @@ module LinkedData
         begin
           puts "Getting: #{path} with #{params}"
           response = conn.get path, params
-          response = response.dup if response.frozen?
+          response = response.dup if response && response.frozen?
           return response unless response.kind_of?(Faraday::Response)
           
           body = response.body
@@ -60,7 +60,7 @@ module LinkedData
       end
       
       def self.patch(path, params)
-        conn.put do |req|
+        conn.patch do |req|
           req.url path
           req.headers['Content-Type'] = 'application/json'
           req.body = MultiJson.dump(params)
@@ -81,6 +81,8 @@ module LinkedData
       def self.recursive_struct(json_obj)
         # TODO: Convert dates to date objects
         if json_obj.is_a?(Hash)
+          return if json_obj.empty?
+
           value_cls = LinkedData::Client::Base.class_for_type(json_obj["@type"])
           links = prep_links(json_obj) # strip links
           context = json_obj.delete("@context") # strip context
@@ -90,33 +92,52 @@ module LinkedData
           attributes_always_present = value_cls.attrs_always_present || [] rescue []
           attributes = (attributes + attributes_always_present).uniq
           
-          # Either get the struct class from cache or create a new one (and store it in the cache)
-          obj_cls = cls_for_keys(attributes)
-
-          # Create objects for each key/value pair, recursively
-          values = []
-          json_obj.each do |key, value|
-            values << recursive_struct(value)
+          # Add attributes to instance
+          if value_cls
+            instance = value_cls.new
+            attributes.each do |attr|
+              attr = attr[1..-1] if attr[0].eql?("@")
+              instance.class.class_eval do
+                define_method attr.to_sym do
+                  instance_variable_get("@#{attr}")
+                end
+                define_method "#{attr}=" do |val|
+                  instance_variable_set("@#{attr}", val)
+                end
+              end
+            end
+            
+            # Create objects for each key/value pair, recursively
+            json_obj.each do |attr, value|
+              attr = attr[1..-1] if attr[0].eql?("@")
+              instance.instance_variable_set("@#{attr}", recursive_struct(value))
+            end
+          else
+            # Either get the struct class from cache or create a new one (and store it in the cache)
+            obj_cls = cls_for_keys(attributes)
+            
+            # Create objects for each key/value pair, recursively
+            values = []
+            json_obj.each do |key, value|
+              values << recursive_struct(value)
+            end
+            
+            # New instance using struct
+            instance = obj_cls.new(*values)
           end
-          
-          # New instance using struct
-          new_values = obj_cls.new(*values)
-          
-          # Either create a known object type (see value_cls assignment above) or use struct
-          obj = value_cls ? value_cls.new(values: new_values) : new_values
           
           # Assign links/context
-          obj.links = links if links
-          obj.context = context if context
+          instance.links = links if links
+          instance.context = context if context
         elsif json_obj.is_a?(Array)
-          obj = []
+          instance = []
           json_obj.each do |value|
-            obj << recursive_struct(value)
+            instance << recursive_struct(value)
           end
         else
-          obj = value_cls ? value_cls.new(values: json_obj) : json_obj
+          instance = value_cls ? value_cls.new(values: json_obj) : json_obj
         end
-        obj
+        instance
       end
       
       def self.prep_links(obj)
