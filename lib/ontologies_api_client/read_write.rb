@@ -9,6 +9,16 @@ module LinkedData
       end
       
       def update
+        HTTP.patch(self.id, changed_values())
+      end
+      
+      def update_from_params(params)
+        params.each do |k,v|
+          self.send("#{k}=", v) rescue next
+        end
+      end
+      
+      def changed_values
         existing = HTTP.get(self.id)
         changed_attrs = {}
         existing.instance_variables.each do |var|
@@ -18,14 +28,7 @@ module LinkedData
           existing_value = existing.instance_variable_get(var)
           changed_attrs[var_sym] = current_value if current_value != existing_value
         end
-        HTTP.patch(self.id, changed_attrs)
-      end
-      
-      def update_from_params(params)
-        params.each do |k,v|
-          self.send("#{k}=", v) rescue next
-        end
-        self.update
+        changed_attrs
       end
       
       def delete
