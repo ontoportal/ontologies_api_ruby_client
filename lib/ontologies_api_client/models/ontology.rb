@@ -15,11 +15,15 @@ module LinkedData
         def private?; false; end
         def licensed?; false; end
         def viewing_restricted?; false; end
-        def admin?(user); false; end
         def flat?; false; end
   
         def purl
           "PURL not implemented"
+        end
+        
+        def admin?(user)
+          return true if user.admin?
+          return administeredBy.any? {|u| u.id == user.id}
         end
         
         # For use with select lists, always includes the admin by default
