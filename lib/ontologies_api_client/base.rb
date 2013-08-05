@@ -91,7 +91,7 @@ module LinkedData
       end
       
       def [](key)
-        key = "@#{key}" unless key[0].eql?("@")
+        key = "@#{key}" unless key.to_s.start_with?("@")
         instance_variable_get(key)
       end
       
@@ -104,6 +104,7 @@ module LinkedData
       
       def create_attributes(attributes)
         attributes.each do |attr|
+          attr = attr.to_s[1..-1].to_sym if attr.to_s.start_with?("@")
           attr_exists = self.public_methods(false).include?(attr)
           unless attr_exists
             self.class.class_eval do
@@ -120,7 +121,7 @@ module LinkedData
       
       def populate_attributes(hash)
         hash.each do |k,v|
-          k = "@#{k}" unless k[0].eql?("@")
+          k = "@#{k}" unless k.to_s.start_with?("@")
           instance_variable_set(k, v)
         end
       end
