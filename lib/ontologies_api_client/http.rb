@@ -57,19 +57,23 @@ module LinkedData
           req.body = MultiJson.dump(obj)
         end
         recursive_struct(load_json(response.body))
+        raise Exception, response.body if response.status >= 500
+        recursive_struct(load_json(response.body))
       end
       
       def self.patch(path, params)
-        conn.patch do |req|
+        response = conn.patch do |req|
           req.url path
           req.headers['Content-Type'] = 'application/json'
           req.body = MultiJson.dump(params)
         end
+        raise Exception, response.body if response.status >= 500
       end
       
       def self.delete(id)
         puts "Deleting #{id}"
-        conn.delete id
+        response = conn.delete id
+        raise Exception, response.body if response.status >= 500
       end
       
       def self.object_from_json(json)
