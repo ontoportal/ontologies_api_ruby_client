@@ -26,6 +26,8 @@ module LinkedData
       @settings.conn = Faraday.new(@settings.rest_url) do |faraday|
         if @settings.cache
           begin
+            require_relative 'middleware/faraday-user-apikey'
+            faraday.use :user_apikey
             require_relative 'middleware/faraday-object-cache'
             faraday.use :object_cache
             require 'faraday-http-cache'
