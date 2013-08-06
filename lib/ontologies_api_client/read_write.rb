@@ -9,7 +9,9 @@ module LinkedData
       end
       
       def update
-        HTTP.patch(self.id, changed_values())
+        values = changed_values()
+        return if values.empty?
+        HTTP.patch(self.id, values)
       end
       
       def update_from_params(params)
