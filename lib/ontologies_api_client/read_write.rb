@@ -24,9 +24,9 @@ module LinkedData
       def changed_values
         existing = HTTP.get(self.id)
         changed_attrs = {}
-        existing.instance_variables.each do |var|
+        self.instance_variables.each do |var|
           var_sym = var[1..-1].to_sym
-          next if [:links, :context].include?(var_sym)
+          next if [:id, :type, :links, :context, :created].include?(var_sym)
           current_value = self.instance_variable_get(var)
           existing_value = existing.instance_variable_get(var)
           changed_attrs[var_sym] = current_value if current_value != existing_value
