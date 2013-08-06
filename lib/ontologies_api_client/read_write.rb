@@ -16,6 +16,7 @@ module LinkedData
         params.each do |k,v|
           self.send("#{k}=", v) rescue next
         end
+        self
       end
       
       def changed_values
