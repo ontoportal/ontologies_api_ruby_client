@@ -22,8 +22,9 @@ module LinkedData
         end
         
         def admin?(user)
+          return false if user.nil?
           return true if user.admin?
-          return administeredBy.any? {|u| u.id == user.id}
+          return administeredBy.any? {|u| u == user.id}
         end
         
         # For use with select lists, always includes the admin by default
