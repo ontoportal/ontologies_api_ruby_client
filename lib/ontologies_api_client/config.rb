@@ -25,13 +25,14 @@ module LinkedData
       
       @settings.conn = Faraday.new(@settings.rest_url) do |faraday|
         if @settings.cache
+          logger = Kernel.constants.include?(:Rails) ? Rails.logger : Logger.new($stdout)
           begin
             require_relative 'middleware/faraday-user-apikey'
             faraday.use :user_apikey
             require_relative 'middleware/faraday-object-cache'
             faraday.use :object_cache
             require 'faraday-http-cache'
-            faraday.use :http_cache, logger: Rails.logger, serializer: Marshal
+            faraday.use :http_cache, logger: logger
             puts "=> faraday caching enabled"
           rescue LoadError
             puts "=> WARNING: faraday http cache gem is not available, caching disabled"
