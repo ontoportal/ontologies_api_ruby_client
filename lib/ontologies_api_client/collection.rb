@@ -70,7 +70,7 @@ module LinkedData
         # Find a resource by id
         def find(id, params = {})
           found = where do |obj|
-            obj.id.eql?(id) rescue binding.pry
+            obj.id.eql?(id)
           end
           found.first
         end
