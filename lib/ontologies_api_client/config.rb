@@ -1,6 +1,6 @@
 require 'ostruct'
 require 'faraday'
-require 'typhoeus'
+require 'patron'
 require 'logger'
 
 module LinkedData
@@ -29,10 +29,10 @@ module LinkedData
           begin
             require_relative 'middleware/faraday-user-apikey'
             faraday.use :user_apikey
-            # require_relative 'middleware/faraday-object-cache'
-            # faraday.use :object_cache
+            require_relative 'middleware/faraday-object-cache'
+            faraday.use :object_cache
             require 'faraday-http-cache'
-            faraday.use :http_cache, logger: logger
+            faraday.use :http_cache, logger: logger, serializer: Marshal
             puts "=> faraday caching enabled"
           rescue LoadError
             puts "=> WARNING: faraday http cache gem is not available, caching disabled"
@@ -40,7 +40,7 @@ module LinkedData
         end
         faraday.request :url_encoded
         faraday.request :multipart
-        faraday.adapter :typhoeus
+        faraday.adapter :patron
         faraday.headers = {
           "Accept" => "application/json",
           "Authorization" => "apikey token=#{@settings.apikey}",
