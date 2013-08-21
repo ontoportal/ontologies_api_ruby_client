@@ -24,7 +24,7 @@ module LinkedData
           
           body = response.body
           raise Exception, body if response.status >= 500
-          obj = recursive_struct(load_json(body))
+          obj = recursive_struct(load_json(body)) rescue binding.pry
         rescue Exception => e
           puts "Problem getting #{path}"
           raise e
