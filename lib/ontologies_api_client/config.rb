@@ -29,8 +29,8 @@ module LinkedData
           begin
             require_relative 'middleware/faraday-user-apikey'
             faraday.use :user_apikey
-            require_relative 'middleware/faraday-object-cache'
-            faraday.use :object_cache
+            # require_relative 'middleware/faraday-object-cache'
+            # faraday.use :object_cache
             require 'faraday-http-cache'
             faraday.use :http_cache, logger: logger
             puts "=> faraday caching enabled"
