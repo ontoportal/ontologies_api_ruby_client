@@ -1,8 +1,5 @@
 require 'oj'
 require 'multi_json'
-require 'typhoeus'
-require 'faraday'
-require 'typhoeus/adapters/faraday'
 
 require_relative 'ontologies_api_client/config'
 require_relative 'ontologies_api_client/http'
