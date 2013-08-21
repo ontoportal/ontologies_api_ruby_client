@@ -18,7 +18,11 @@ module LinkedData
         
         begin
           puts "Getting: #{path} with #{params}"
-          response = conn.get path, params
+          response = conn.get do |req|
+            req.url path
+            req.params = params
+            req.options[:timeout] = 60
+          end
           response = response.dup if response && response.frozen?
           return response unless response.kind_of?(Faraday::Response)
           
