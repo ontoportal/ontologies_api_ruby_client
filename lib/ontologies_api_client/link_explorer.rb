@@ -12,17 +12,17 @@ module LinkedData
       end
       
       def method_missing(meth, *args, &block)
-        if @links.key?(meth.to_s)
+        if combined_links.key?(meth.to_s)
           explore_link(meth, *args)
         elsif meth == :batch
-          explore_links(*args)
+          explore_link(args)
         else
           super
         end
       end
       
       def respond_to?(meth)
-        if @links.key?(meth.to_s) || meth == :batch
+        if combined_links.key?(meth.to_s) || meth == :batch
           return true
         else
           super
@@ -30,7 +30,7 @@ module LinkedData
       end
       
       def explore_link(*args)
-        link = @links[args.shift.to_s]
+        link = combined_links[args.shift.to_s]
         params = args.shift
         unless params.is_a?(Hash)
           args.push(params)
@@ -38,11 +38,23 @@ module LinkedData
         end
         replacements = args.shift
         full_attributes = params.delete(:full)
-        url = replace_template_elements(link.to_s, replacements)
-        value_cls = LinkedData::Client::Base.class_for_type(link.media_type)
-        params[:include] = value_cls.attributes(full_attributes)
-        HTTP.get(url, params)
+        if link.is_a?(Array)
+          value_cls = LinkedData::Client::Base.class_for_type(link.first.media_type)
+          ids = link.map {|l| l.to_s}
+          value_cls.where {|o| ids.include?(o.id)}
+        else
+          url = replace_template_elements(link.to_s, replacements)
+          value_cls = LinkedData::Client::Base.class_for_type(link.media_type)
+          params[:include] = value_cls.attributes(full_attributes)
+          HTTP.get(url, params)
+        end
       end
+      
+      def combined_links
+        linkable_attributes.merge(@links)
+      end
+
+      private
       
       def replace_template_elements(url, values = [])
         return url if values.nil? || values.empty?
@@ -53,9 +65,26 @@ module LinkedData
         end
       end
       
-      def explore_links(*args)
-        paths = args.each.map {|p| [p.to_s, p.media_type]}
-        HTTP.batch_get(args)
+      def linkable_attributes
+        linkable = {}
+        (@instance.context || {}).each do |attr, val|
+          next unless val.is_a?(Hash) && val["@id"]
+          links = (@instance.send(attr.to_sym) || []).dup
+          if links.is_a?(Array)
+            new_links = []
+            links.each do |link|
+              link = HTTP::Link.new(link)
+              link.media_type = val["@id"]
+              new_links << link
+            end
+            links = new_links
+          else
+            links = HTTP::Link.new(links)
+            links.media_type = val["@id"]
+          end
+          linkable[attr.to_s] = links
+        end
+        linkable
       end
     end
   end
