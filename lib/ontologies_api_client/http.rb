@@ -36,12 +36,16 @@ module LinkedData
         obj
       end
       
-      def self.get_batch(paths)
+      def self.get_batch(paths, params = {})
         responses = []
-        conn.in_parallel do
-          paths.each {|p| responses << conn.get(p[0], p[1]) }
+        if conn.in_parallel?
+          conn.in_parallel do
+            paths.each {|p| responses << conn.get(p, params) }
+          end
+        else
+          responses = threaded_request(paths, params)
         end
-        return *responses
+        return responses
       end
       
       def self.post(path, obj)
@@ -85,6 +89,18 @@ module LinkedData
       end
       
       private
+      
+      def self.threaded_request(paths, params)
+        threads = []
+        responses = []
+        paths.each do |path|
+          threads << Thread.new do
+            responses << get(path, params)
+          end
+        end
+        threads.join
+        responses
+      end
       
       def self.recursive_struct(json_obj)
         # TODO: Convert dates to date objects
