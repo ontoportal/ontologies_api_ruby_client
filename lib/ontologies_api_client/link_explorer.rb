@@ -6,8 +6,9 @@ module LinkedData
     class LinkExplorer
       HTTP = LinkedData::Client::HTTP
       
-      def initialize(links)
+      def initialize(links, instance)
         @links = links
+        @instance = instance
       end
       
       def method_missing(meth, *args, &block)

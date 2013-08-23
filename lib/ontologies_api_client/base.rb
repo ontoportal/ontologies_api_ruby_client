@@ -51,7 +51,7 @@ module LinkedData
       # This instantiates an instance of this class and uses
       # method missing to determine which link to follow
       def explore
-        LinkedData::Client::LinkExplorer.new(@links)
+        LinkedData::Client::LinkExplorer.new(@links, self)
       end
       
       def to_hash
