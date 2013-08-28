@@ -60,7 +60,7 @@ module LinkedData
         # Find certain resources from the collection by passing a block that filters results
         def where(params = {}, &block)
           if block_given?
-            return all.select {|e| block.call(e)}
+            return all(params).select {|e| block.call(e)}
           else
             raise ArgumentException("Must provide a block to find items")
           end
