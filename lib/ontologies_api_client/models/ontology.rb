@@ -11,10 +11,6 @@ module LinkedData
         @media_type = "http://data.bioontology.org/metadata/Ontology"
         @include_attrs    = "all"
   
-        #TODO: Implement actual methods
-        def licensed?; false; end
-        def viewing_restricted?; false; end
-
         def flat?
           self.flat
         end
@@ -25,6 +21,14 @@ module LinkedData
 
         def licensed?
           viewingRestriction && viewingRestriction.downcase.eql?("licensed")
+        end
+        
+        def viewing_restricted?
+          private? && licensed?
+        end
+        
+        def view?
+          viewOf
         end
 
         def purl
