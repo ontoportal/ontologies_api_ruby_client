@@ -12,11 +12,21 @@ module LinkedData
         @include_attrs    = "all"
   
         #TODO: Implement actual methods
-        def private?; false; end
         def licensed?; false; end
         def viewing_restricted?; false; end
-        def flat?; false; end
+
+        def flat?
+          self.flat
+        end
   
+        def private?
+          viewingRestriction && viewingRestriction.downcase.eql?("private")
+        end
+
+        def licensed?
+          viewingRestriction && viewingRestriction.downcase.eql?("licensed")
+        end
+
         def purl
           "PURL not implemented"
         end
