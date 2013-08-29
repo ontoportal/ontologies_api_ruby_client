@@ -28,7 +28,7 @@ module LinkedData
         end
         
         def view?
-          viewOf
+          viewOf && viewOf.length > 1
         end
 
         def purl
