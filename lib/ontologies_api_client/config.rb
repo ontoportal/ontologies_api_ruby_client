@@ -10,6 +10,7 @@ module LinkedData
 
     @settings = OpenStruct.new
     @settings_run = false
+    @settings_run_connection = false
 
     def config(&block)
       return if @settings_run
@@ -22,9 +23,16 @@ module LinkedData
       @settings.apikey     ||= "4ea81d74-8960-4525-810b-fa1baab576ff"
       @settings.links_attr ||= "links"
       @settings.cache      ||= false
-      
+      @settings_run = true
+    end
+    
+    def config_connection(options = {})
+      return if @settings_run_connection
+      store = options[:cache_store]
       @settings.conn = Faraday.new(@settings.rest_url) do |faraday|
         if @settings.cache
+          require_relative 'middleware/faraday-long-requests'
+          faraday.use :long_requests
           logger = Kernel.constants.include?(:Rails) ? Rails.logger : Logger.new($stdout)
           begin
             require_relative 'middleware/faraday-user-apikey'
@@ -32,7 +40,7 @@ module LinkedData
             require_relative 'middleware/faraday-object-cache'
             faraday.use :object_cache
             require 'faraday-http-cache'
-            faraday.use :http_cache, logger: logger, serializer: Marshal
+            faraday.use :http_cache, serializer: Marshal, store: store
             puts "=> faraday caching enabled"
           rescue LoadError
             puts "=> WARNING: faraday http cache gem is not available, caching disabled"
@@ -47,8 +55,11 @@ module LinkedData
           "User-Agent" => "NCBO API Ruby Client v0.1.0"
         }
       end
-      
-      @settings_run = true
+      @settings_run_connection = true
+    end
+    
+    def connection_configured?
+      @settings_run_connection
     end
   end
 end

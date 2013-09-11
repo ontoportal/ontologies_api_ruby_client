@@ -10,6 +10,13 @@ module LinkedData
       OBJ_CACHE = {}
       
       def self.conn
+        unless LinkedData::Client.connection_configured?
+          if Kernel.const_defined?("Rails")
+            rails = Kernel.const_get("Rails")
+            store = rails.cache if rails.cache
+          end
+          LinkedData::Client.config_connection(cache_store: store)
+        end
         LinkedData::Client.settings.conn
       end
       
