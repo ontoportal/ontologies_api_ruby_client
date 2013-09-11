@@ -31,8 +31,6 @@ module LinkedData
       store = options[:cache_store]
       @settings.conn = Faraday.new(@settings.rest_url) do |faraday|
         if @settings.cache
-          require_relative 'middleware/faraday-long-requests'
-          faraday.use :long_requests
           logger = Kernel.constants.include?(:Rails) ? Rails.logger : Logger.new($stdout)
           begin
             require_relative 'middleware/faraday-user-apikey'
