@@ -27,7 +27,7 @@ module Faraday
 
             # Update if last modified is different
             if stored_obj[:last_modified] != last_modified
-              puts "UPDATING CACHE #{requested_env[:url].to_s}"
+              puts "UPDATING CACHE #{requested_env[:url].to_s}" if $DEBUG
               stored_obj[:last_modified] = last_modified
               storage.cache.write(key, stored_obj)
             end
@@ -40,7 +40,7 @@ module Faraday
             ld_obj = stored_obj[:ld_obj]
           else
             ld_obj = LinkedData::Client::HTTP.object_from_json(requested_env[:body])
-            puts "STORING OBJECT: #{requested_env[:url].to_s}"
+            puts "STORING OBJECT: #{requested_env[:url].to_s}" if $DEBUG
             stored_obj = {last_modified: last_modified, ld_obj: ld_obj}
             
             begin

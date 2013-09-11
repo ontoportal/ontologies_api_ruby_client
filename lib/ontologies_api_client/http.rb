@@ -17,7 +17,7 @@ module LinkedData
         params = params.delete_if {|k,v| v == nil || v.to_s.empty?}
         
         begin
-          puts "Getting: #{path} with #{params}"
+          puts "Getting: #{path} with #{params}" if $DEBUG
           response = conn.get do |req|
             req.url path
             req.params = params
@@ -30,7 +30,7 @@ module LinkedData
           raise Exception, body if response.status >= 500
           obj = recursive_struct(load_json(body)) rescue binding.pry
         rescue Exception => e
-          puts "Problem getting #{path}"
+          puts "Problem getting #{path}" if $DEBUG
           raise e
         end
         obj
@@ -79,7 +79,7 @@ module LinkedData
       end
       
       def self.delete(id)
-        puts "Deleting #{id}"
+        puts "Deleting #{id}" if $DEBUG
         response = conn.delete id
         raise Exception, response.body if response.status >= 500
       end
