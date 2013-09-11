@@ -81,7 +81,7 @@ module LinkedData
           req.url path
           req.headers['Content-Type'] = 'application/json'
           req.body = MultiJson.dump(params)
-          req.params = MultiJson.dump(params)
+          req.params = params
         end
         raise Exception, response.body if response.status >= 500
       end
