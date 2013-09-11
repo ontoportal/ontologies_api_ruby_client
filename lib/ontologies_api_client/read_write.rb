@@ -8,8 +8,8 @@ module LinkedData
         HTTP.post(self.class.collection_path, self.to_hash)
       end
       
-      def update
-        values = changed_values()
+      def update(options = {})
+        values = options[:values] || changed_values()
         return if values.empty?
         HTTP.patch(self.id, values)
       end
