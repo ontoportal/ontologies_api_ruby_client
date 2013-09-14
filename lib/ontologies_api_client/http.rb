@@ -25,17 +25,23 @@ module LinkedData
         
         begin
           puts "Getting: #{path} with #{params}" if $DEBUG
-          response = conn.get do |req|
-            req.url path
-            req.params = params
-            req.options[:timeout] = 60
+          begin
+            response = conn.get do |req|
+              req.url path
+              req.params = params
+              req.options[:timeout] = 60
+            end
+          rescue Exception => e
+            params = Faraday::Utils.build_query(params)
+            path << "?" unless params.empty?
+            raise e, "Problem retrieving:\n#{path}#{params}\n\nError: #{e.message}\n#{e.backtrace.join("\n\t")}"
           end
           response = response.dup if response && response.frozen?
           return response unless response.kind_of?(Faraday::Response)
           
           body = response.body
-          raise Exception, body if response.status >= 500
-          obj = recursive_struct(load_json(body)) rescue binding.pry
+          raise Exception, "Problem retrieving:\n#{path}\n#{body}" if response.status >= 500
+          obj = recursive_struct(load_json(body))
         rescue Exception => e
           puts "Problem getting #{path}" if $DEBUG
           raise e
@@ -192,7 +198,11 @@ module LinkedData
       end
       
       def self.load_json(json)
-        MultiJson.load(json)
+        begin
+          MultiJson.load(json)
+        rescue Exception => e
+          raise e, "Problem loading json\n#{json}"
+        end
       end
       
       def self.dump_json(json)
