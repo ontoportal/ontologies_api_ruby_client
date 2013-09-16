@@ -19,10 +19,12 @@ module LinkedData
       yield @settings if block_given?
 
       # Set defaults
-      @settings.rest_url   ||= "http://stagedata.bioontology.org/"
-      @settings.apikey     ||= "4ea81d74-8960-4525-810b-fa1baab576ff"
-      @settings.links_attr ||= "links"
-      @settings.cache      ||= false
+      @settings.rest_url                ||= "http://stagedata.bioontology.org/"
+      @settings.apikey                  ||= "4ea81d74-8960-4525-810b-fa1baab576ff"
+      @settings.links_attr              ||= "links"
+      @settings.cache                   ||= false
+      @settings.enable_long_request_log ||= false
+
       @settings_run = true
     end
     
@@ -30,10 +32,15 @@ module LinkedData
       return if @settings_run_connection
       store = options[:cache_store]
       @settings.conn = Faraday.new(@settings.rest_url) do |faraday|
-        if @settings.cache
-          logger = Kernel.constants.include?(:Rails) ? Rails.logger : Logger.new($stdout)
+        if @settings.enable_long_request_log
           require_relative 'middleware/faraday-user-apikey'
           faraday.use :user_apikey
+        end
+
+        require_relative 'middleware/faraday-long-requests'
+        faraday.use :long_requests
+
+        if @settings.cache
           begin
             require_relative 'middleware/faraday-object-cache'
             faraday.use :object_cache
@@ -44,6 +51,7 @@ module LinkedData
             puts "=> WARNING: faraday http cache gem is not available, caching disabled"
           end
         end
+
         faraday.request :multipart
         faraday.request :url_encoded
         faraday.adapter :patron
