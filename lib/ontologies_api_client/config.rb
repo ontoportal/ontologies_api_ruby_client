@@ -44,8 +44,8 @@ module LinkedData
             puts "=> WARNING: faraday http cache gem is not available, caching disabled"
           end
         end
-        faraday.request :url_encoded
         faraday.request :multipart
+        faraday.request :url_encoded
         faraday.adapter :patron
         faraday.headers = {
           "Accept" => "application/json",
