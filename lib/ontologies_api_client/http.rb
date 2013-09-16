@@ -62,33 +62,23 @@ module LinkedData
       end
       
       def self.post(path, obj)
-        response = conn.post do |req|
-          req.url path
-          req.headers['Content-Type'] = 'application/json'
-          req.body = MultiJson.dump(obj)
-        end
+        obj = params_file_handler(obj)
+        response = conn.post path, obj
         raise Exception, response.body if response.status >= 500
         recursive_struct(load_json(response.body))
       end
       
       def self.put(path, obj)
-        response = conn.put do |req|
-          req.url path
-          req.headers['Content-Type'] = 'application/json'
-          req.body = MultiJson.dump(obj)
-        end
+        obj = params_file_handler(obj)
+        response = conn.put path, obj
         recursive_struct(load_json(response.body))
         raise Exception, response.body if response.status >= 500
         recursive_struct(load_json(response.body))
       end
       
       def self.patch(path, params)
-        response = conn.patch do |req|
-          req.url path
-          req.headers['Content-Type'] = 'application/json'
-          req.body = MultiJson.dump(params)
-          req.params = params
-        end
+        params = params_file_handler(params)
+        response = conn.patch path, params
         raise Exception, response.body if response.status >= 500
       end
       
@@ -103,6 +93,15 @@ module LinkedData
       end
       
       private
+      
+      def self.params_file_handler(params)
+        return if params.nil?
+        params.dup.each do |attribute, value|
+          next unless value.is_a?(File) || value.is_a?(Tempfile)
+          params[attribute] = Faraday::UploadIO.new(value.path, "text/plain")
+        end
+        params
+      end
       
       def self.threaded_request(paths, params)
         threads = []
