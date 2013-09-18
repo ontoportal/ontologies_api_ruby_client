@@ -9,7 +9,7 @@
 Configuration is provided by calling the <code>config</code> method
 
     LinkedData::Client.config do |config|
-      config.rest_url   = "http://stagedata.bioontology.org/"
+      config.rest_url   = "http://stagedata.bioontology.org"
       config.apikey     = "your_apikey"
       config.links_attr = "links"
       config.cache      = false

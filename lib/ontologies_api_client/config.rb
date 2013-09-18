@@ -19,11 +19,14 @@ module LinkedData
       yield @settings if block_given?
 
       # Set defaults
-      @settings.rest_url                ||= "http://stagedata.bioontology.org/"
+      @settings.rest_url                ||= "http://stagedata.bioontology.org"
       @settings.apikey                  ||= "4ea81d74-8960-4525-810b-fa1baab576ff"
       @settings.links_attr              ||= "links"
       @settings.cache                   ||= false
       @settings.enable_long_request_log ||= false
+
+      # Remove trailing slash
+      @settings.rest_url = @settings.rest_url.chomp("/")
 
       @settings_run = true
     end

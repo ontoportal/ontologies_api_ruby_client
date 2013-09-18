@@ -13,7 +13,7 @@ module LinkedData
         
         def self.authenticate(user, password)
           auth_params = {user: user, password: password, include: "all"}
-          LinkedData::Client::HTTP.post("#{LinkedData::Client.settings.rest_url}users/authenticate", auth_params)
+          LinkedData::Client::HTTP.post("#{LinkedData::Client.settings.rest_url}/users/authenticate", auth_params)
         end
         
         def admin?
