@@ -59,6 +59,33 @@ module LinkedData
           (select_opts + self.administeredBy).uniq
         end
         
+        ##
+        # Find a resource by a combination of attributes
+        # Override to search for views as well by default
+        # Views get hidden on the REST service unless the `include_views`
+        # parameter is set to `true`
+        def self.find_by(attrs, *args)
+          params = args.shift
+          if params.is_a?(Hash)
+            params[:include_views] = params[:include_views] || true
+          else
+            # Stick params back and create a new one
+            args.push({include_views: true})
+          end
+          args.unshift(params)
+          super(attrs, *args)
+        end
+        
+        ##
+        # Find a resource by id
+        # Override to search for views as well by default
+        # Views get hidden on the REST service unless the `include_views`
+        # parameter is set to `true`
+        def find(id, params = {})
+          params[:include_views] = params[:include_views] || true
+          super(id, params)
+        end
+        
       end
     end
   end

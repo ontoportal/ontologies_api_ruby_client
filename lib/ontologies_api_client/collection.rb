@@ -85,15 +85,21 @@ module LinkedData
         # Find a resource by a combination of attributes
         def find_by(attrs, *args)
           attributes = attrs.split("_and_")
-          where do |obj|
+          values_to_find = args.slice!(0..attributes.length-1)
+          params = args.shift
+          unless params.is_a?(Hash)
+            args.unshift(params)
+            params = {}
+          end
+          where(params) do |obj|
             bools = []
             attributes.each_with_index do |attr, index|
               if obj.respond_to?(attr)
                 value = obj.send(attr)
                 if value.is_a?(Enumerable)
-                  bools << value.include?(args[index])
+                  bools << value.include?(values_to_find[index])
                 else
-                  bools << (value == args[index])
+                  bools << (value == values_to_find[index])
                 end
               end
             end
