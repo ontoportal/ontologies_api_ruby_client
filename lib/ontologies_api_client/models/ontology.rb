@@ -32,7 +32,11 @@ module LinkedData
         end
 
         def purl
-          "PURL not implemented"
+          if self.acronym
+            "#{LinkedData::Client.settings.purl_prefix}/#{acronym}"
+          else
+            ""
+          end
         end
         
         def admin?(user)

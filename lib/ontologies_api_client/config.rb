@@ -24,6 +24,7 @@ module LinkedData
       @settings.links_attr              ||= "links"
       @settings.cache                   ||= false
       @settings.enable_long_request_log ||= false
+      @settings.purl_prefix             ||= "http://purl.example.org"
 
       # Remove trailing slash
       @settings.rest_url = @settings.rest_url.chomp("/")
