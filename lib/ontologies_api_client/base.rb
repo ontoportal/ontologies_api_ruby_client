@@ -86,7 +86,7 @@ module LinkedData
         end
       end
       
-      def respond_to?(meth)
+      def respond_to?(meth, private = false)
         true
       end
       

@@ -21,7 +21,7 @@ module LinkedData
         end
       end
       
-      def respond_to?(meth)
+      def respond_to?(meth, private = false)
         if combined_links.key?(meth.to_s) || meth == :batch
           return true
         else
