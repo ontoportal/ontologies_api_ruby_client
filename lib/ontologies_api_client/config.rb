@@ -51,6 +51,8 @@ module LinkedData
             require 'faraday-http-cache'
             faraday.use :http_cache, serializer: Marshal, store: store
             puts "=> faraday caching enabled"
+            puts "=> faraday cache store:"
+            pp store
           rescue LoadError
             puts "=> WARNING: faraday http cache gem is not available, caching disabled"
           end
