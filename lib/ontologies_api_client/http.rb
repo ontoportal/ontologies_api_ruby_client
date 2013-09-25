@@ -1,14 +1,44 @@
 require 'oj'
 require 'multi_json'
 require 'digest'
+require 'ostruct'
+
+##
+# This monkeypatch makes OpenStruct act like Struct objects
+class OpenStruct
+  alias :each :each_pair
+
+  def member?(key)
+    @table.key?(key)
+  end
+
+  def members
+    @table.keys
+  end
+
+  def length
+    @table.keys.length
+  end
+  alias :size :length
+  
+  def to_a
+    @table.to_a
+  end
+  
+  def values
+    @table.values
+  end
+  
+  def values_at(*selectors)
+    @table.values.values_at(*selectors)
+  end
+end
 
 module LinkedData
   module Client
     module HTTP
       class Link < String; attr_accessor :media_type; end
 
-      OBJ_CACHE = {}
-      
       def self.conn
         unless LinkedData::Client.connection_configured?
           if Kernel.const_defined?("Rails")
@@ -150,17 +180,12 @@ module LinkedData
               instance.instance_variable_set("@#{attr}", recursive_struct(value))
             end
           else
-            # Either get the struct class from cache or create a new one (and store it in the cache)
-            obj_cls = cls_for_keys(attributes)
-            
-            # Create objects for each key/value pair, recursively
-            values = []
+            # Get the struct class
+            recursive_obj_hash = {links: nil, context: nil}
             json_obj.each do |key, value|
-              values << recursive_struct(value)
+              recursive_obj_hash[key] = recursive_struct(value)
             end
-            
-            # New instance using struct
-            instance = obj_cls.new(*values)
+            instance = OpenStruct.new(recursive_obj_hash)
           end
           
           # Assign links/context
@@ -191,11 +216,6 @@ module LinkedData
         links
       end
         
-      def self.cls_for_keys(keys)
-        keys = keys + [:links, :context]
-        OBJ_CACHE[keys.hash] ||= Struct.new(*keys)
-      end
-      
       def self.load_json(json)
         begin
           MultiJson.load(json)
