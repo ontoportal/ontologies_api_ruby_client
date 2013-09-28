@@ -113,9 +113,10 @@ module Faraday
       return if obj.nil?
       if obj.is_a?(MultiMemcache)
         # Try to get from the large object cache
-        obj = @large_object_cache[key] if @large_object_cache
+        large_obj = @large_object_cache[key] if @large_object_cache
         # Fallback to the memcache version
-        obj ||= cache_read_multi(key)
+        large_obj ||= cache_read_multi(key)
+        obj = large_obj
       end
       obj.dup
     end
