@@ -139,7 +139,10 @@ module Faraday
       parts = []
       part_count = (dump.bytesize / chunk) + 1
       position = 0
-      part_count.times { parts << dump[position..position+chunk-1]; position += chunk }
+      part_count.times do
+        parts << dump[position..position+chunk-1]
+        position += chunk
+      end
       mm.parts = parts.length
       parts.each_with_index {|p,i| @store.write("#{key}:p#{i}", p, *args)}
       @store.write(key, mm, *args)
