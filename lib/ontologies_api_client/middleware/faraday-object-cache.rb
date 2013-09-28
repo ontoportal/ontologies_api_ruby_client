@@ -90,44 +90,76 @@ module Faraday
     
     private
     
-    class MultiMemcache; attr_accessor :parts; end
-    
     def cache_write(key, obj, *args)
-      dump = Marshal.dump(obj)
-      chunk = 1_000_000
-      if dump.bytesize > chunk
-        mm = MultiMemcache.new
-        parts = []
-        part_count = (dump.bytesize / chunk) + 1
-        position = 0
-        part_count.times { parts << dump[position..position+chunk-1]; position += chunk }
-        mm.parts = parts.length
-        parts.each_with_index {|p,i| @store.write("#{key}:p#{i}", p, *args)}
-        result = @store.write(key, mm, *args)
+      result = @store.write(key, obj, *args)
+      
+      if result
+        return result
       else
-        result = @store.write(key, dump, *args)
+        # This should still get stored in memcache
+        # keep it in memory, though, because
+        # marshal/unmarshal is too slow.
+        # This way memcache will act as a backup
+        # and you load from there if it isn't
+        # in memory yet.
+        @large_object_cache ||= {}
+        @large_object_cache[key] = obj
+        cache_write_multi(key, obj, *args)
+        return true
       end
-      result
     end
     
     def cache_read(key)
       obj = @store.read(key)
       return if obj.nil?
       if obj.is_a?(MultiMemcache)
-        parts = []
-        obj.parts.times do |i|
-          parts << @store.read("#{key}:p#{i}")
-        end
-        obj = parts.join
+        # Try to get from the large object cache
+        obj = @large_object_cache[key] if @large_object_cache
+        # Fallback to the memcache version
+        obj ||= cache_read_multi(key)
       end
-      obj = Marshal.load(obj)
-      obj
+      obj.dup
     end
     
     def cache_exist?(key)
       @store.exist?(key)
     end
     
+    class MultiMemcache; attr_accessor :parts; end
+
+    ##
+    # This wraps memcache in a method that will split large objects
+    # for storage in multiple keys to get around memcache limits on
+    # value size. The corresponding cache_read_multi will read out
+    # the objects.
+    def cache_write_multi(key, obj, *args)
+      dump = Marshal.dump(obj)
+      chunk = 1_000_000
+      mm = MultiMemcache.new
+      parts = []
+      part_count = (dump.bytesize / chunk) + 1
+      position = 0
+      part_count.times { parts << dump[position..position+chunk-1]; position += chunk }
+      mm.parts = parts.length
+      parts.each_with_index {|p,i| @store.write("#{key}:p#{i}", p, *args)}
+      @store.write(key, mm, *args)
+    end
+    
+    ##
+    # Read out a multipart cache object
+    def cache_read_multi(key)
+      obj = @store.read(key)
+      if obj.is_a?(MultiMemcache)
+        keys = []
+        obj.parts.times do |i|
+          keys << "#{key}:p#{i}"
+        end
+        parts = @store.read_multi(keys).values.join
+        obj = Marshal.load(parts)
+      end
+      obj
+    end
+
     # Internal: Generates a String key for a given request object.
     # The request object is folded into a sorted Array (since we can't count
     # on hashes order on Ruby 1.8), encoded as JSON and digested as a `SHA1`
