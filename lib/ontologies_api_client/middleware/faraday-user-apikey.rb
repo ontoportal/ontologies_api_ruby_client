@@ -15,7 +15,7 @@ module Faraday
     def call!(env)
       user = Thread.current[:session] && Thread.current[:session][:user] ? Thread.current[:session][:user] : nil
       if user
-        headers = env[:request_headers].dup
+        headers = env[:request_headers]
         headers["Authorization"] = headers["Authorization"] + "&userapikey=" + user.apikey
         env[:request_headers] = headers
       end
