@@ -36,7 +36,7 @@ module Faraday
       
       last_modified = cache_read(last_modified_key)
       headers = env[:request_headers]
-      puts "DEBUG " + last_modified.to_s if $CACHE_DEBUG
+      puts "DEBUG last modified: " + last_modified.to_s if last_modified && $CACHE_DEBUG
       headers['If-Modified-Since'] = last_modified if last_modified
       
       @app.call(env).on_complete do |requested_env|
