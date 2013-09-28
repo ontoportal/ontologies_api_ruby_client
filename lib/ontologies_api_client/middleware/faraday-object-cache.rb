@@ -53,7 +53,7 @@ module Faraday
             stored_obj = cache_read(key)
             
             # Update if last modified is different
-            stored_obj[:last_modified] != last_modified rescue binding.pry
+            stored_obj[:last_modified] != last_modified
             if stored_obj[:last_modified] != last_modified
               puts "UPDATING CACHE #{requested_env[:url].to_s}" if $CACHE_DEBUG
               stored_obj[:last_modified] = last_modified
