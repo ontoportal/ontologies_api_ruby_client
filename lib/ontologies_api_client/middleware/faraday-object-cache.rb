@@ -20,7 +20,6 @@ module Faraday
     end
     
     def call(env)
-      $CACHE_DEBUG = true
       # Add if newer than last modified statement to headers
       request_key = cache_key_for(create_request(env))
       last_modified_key = "LM::#{request_key}"
