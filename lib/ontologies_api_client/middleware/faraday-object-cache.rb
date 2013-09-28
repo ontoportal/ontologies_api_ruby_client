@@ -20,6 +20,7 @@ module Faraday
     end
     
     def call(env)
+      $CACHE_DEBUG = true
       # Add if newer than last modified statement to headers
       request_key = cache_key_for(create_request(env))
       last_modified_key = "LM::#{request_key}"
@@ -27,19 +28,21 @@ module Faraday
       
       # If we made the last request within the expiry
       if cache_exist?(last_retrieved_key) && cache_exist?(request_key)
-        puts "DEBUG not expired" if $DEBUG
-        return cache_read(request_key)[:ld_obj]
+        puts "DEBUG not expired #{env[:url].to_s}" if $CACHE_DEBUG
+        cached_item = cache_read(request_key)
+        ld_obj = cached_item.is_a?(Hash) && cached_item.key?(:ld_obj) ? cached_item[:ld_obj] : cached_item
+        return ld_obj
       end
       
       last_modified = cache_read(last_modified_key)
       headers = env[:request_headers]
-      puts "DEBUG " + last_modified.to_s if $DEBUG
+      puts "DEBUG " + last_modified.to_s if $CACHE_DEBUG
       headers['If-Modified-Since'] = last_modified if last_modified
       
       @app.call(env).on_complete do |requested_env|
         # Only cache get and head requests
         if [:get, :head].include?(requested_env[:method])
-          puts "DEBUG response status: " + requested_env[:status].to_s if $DEBUG
+          puts "DEBUG response status: " + requested_env[:status].to_s if $CACHE_DEBUG
 
           last_modified = requested_env[:response_headers]["Last-Modified"]
 
@@ -53,7 +56,7 @@ module Faraday
             # Update if last modified is different
             stored_obj[:last_modified] != last_modified rescue binding.pry
             if stored_obj[:last_modified] != last_modified
-              puts "UPDATING CACHE #{requested_env[:url].to_s}" if $DEBUG
+              puts "UPDATING CACHE #{requested_env[:url].to_s}" if $CACHE_DEBUG
               stored_obj[:last_modified] = last_modified
               cache_write(last_modified_key, last_modified)
               cache_write(key, stored_obj)
@@ -61,11 +64,18 @@ module Faraday
             
             ld_obj = stored_obj[:ld_obj]
           else
-            ld_obj = LinkedData::Client::HTTP.object_from_json(requested_env[:body])
+            if requested_env[:body].nil? || requested_env[:body].empty?
+              # We got here with an empty body, meaning the object wasn't
+              # in the cache (weird). So re-do the request.
+              puts "REDOING REQUEST NO CACHE ENTRY #{requested_env[:url].to_s}"
+              env[:request_headers].delete("If-Modified-Since")
+              requested_env = @app.call(env).env
+            end
+            ld_obj = LinkedData::Client::HTTP.object_from_json(requested_env[:body]) rescue binding.pry
             expiry = requested_env[:response_headers]["Cache-Control"].to_s.split("=").last.to_i
             if expiry > 0 && last_modified
               # This request is cacheable, store it
-              puts "STORING OBJECT: #{requested_env[:url].to_s}" if $DEBUG
+              puts "STORING OBJECT: #{requested_env[:url].to_s}" if $CACHE_DEBUG
               stored_obj = {last_modified: last_modified, ld_obj: ld_obj}
               cache_write(last_modified_key, last_modified)
               cache_write(last_retrieved_key, true, expires_in: expiry)
@@ -80,12 +90,38 @@ module Faraday
     
     private
     
+    class MultiMemcache; attr_accessor :parts; end
+    
     def cache_write(key, obj, *args)
-      @store.write(key, obj, *args)
+      dump = Marshal.dump(obj)
+      chunk = 1_000_000
+      if dump.bytesize > chunk
+        mm = MultiMemcache.new
+        parts = []
+        part_count = (dump.bytesize / chunk) + 1
+        position = 0
+        part_count.times { parts << dump[position..position+chunk-1]; position += chunk }
+        mm.parts = parts.length
+        parts.each_with_index {|p,i| @store.write("#{key}:p#{i}", p, *args)}
+        result = @store.write(key, mm, *args)
+      else
+        result = @store.write(key, dump, *args)
+      end
+      result
     end
     
     def cache_read(key)
-      @store.read(key)
+      obj = @store.read(key)
+      return if obj.nil?
+      if obj.is_a?(MultiMemcache)
+        parts = []
+        obj.parts.times do |i|
+          parts << @store.read("#{key}:p#{i}")
+        end
+        obj = parts.join
+      end
+      obj = Marshal.load(obj)
+      obj
     end
     
     def cache_exist?(key)
