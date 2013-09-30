@@ -48,8 +48,6 @@ module LinkedData
           begin
             require_relative 'middleware/faraday-object-cache'
             faraday.use :object_cache, store: store
-            # require 'faraday-http-cache'
-            # faraday.use :http_cache, serializer: Marshal, store: store
             puts "=> faraday caching enabled"
             puts "=> faraday cache store:"
             pp store
