@@ -70,7 +70,7 @@ module Faraday
               env[:request_headers].delete("If-Modified-Since")
               requested_env = @app.call(env).env
             end
-            ld_obj = LinkedData::Client::HTTP.object_from_json(requested_env[:body]) rescue binding.pry
+            ld_obj = LinkedData::Client::HTTP.object_from_json(requested_env[:body])
             expiry = requested_env[:response_headers]["Cache-Control"].to_s.split("=").last.to_i
             if expiry > 0 && last_modified
               # This request is cacheable, store it
