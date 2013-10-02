@@ -71,7 +71,7 @@ module Faraday
               requested_env = @app.call(env).env
             end
             ld_obj = LinkedData::Client::HTTP.object_from_json(requested_env[:body])
-            expiry = requested_env[:response_headers]["Cache-Control"].to_s.split("=").last.to_i
+            expiry = requested_env[:response_headers]["Cache-Control"].to_s.split("max-age=").last.to_i
             if expiry > 0 && last_modified
               # This request is cacheable, store it
               puts "STORING OBJECT: #{requested_env[:url].to_s}" if $CACHE_DEBUG
