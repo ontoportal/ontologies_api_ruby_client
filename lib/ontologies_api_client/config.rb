@@ -1,6 +1,6 @@
 require 'ostruct'
 require 'faraday'
-require 'patron'
+require 'excon'
 require 'logger'
 
 module LinkedData
@@ -58,7 +58,7 @@ module LinkedData
 
         faraday.request :multipart
         faraday.request :url_encoded
-        faraday.adapter :patron
+        faraday.adapter :excon
         faraday.headers = {
           "Accept" => "application/json",
           "Authorization" => "apikey token=#{@settings.apikey}",
