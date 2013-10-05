@@ -18,7 +18,8 @@ module LinkedData
         def relation_icon; ""; end
   
         def purl
-          ont = self.explore.ontology
+          return "" if self.links.nil?
+          ont = self.explore.ontology rescue binding.pry
           "#{LinkedData::Client.settings.purl_prefix}/#{acronym}/#{self.id}"
         end
   
