@@ -1,3 +1,4 @@
+require "cgi"
 require_relative "../base"
 
 module LinkedData
@@ -19,8 +20,8 @@ module LinkedData
   
         def purl
           return "" if self.links.nil?
-          ont = self.explore.ontology rescue binding.pry
-          "#{LinkedData::Client.settings.purl_prefix}/#{acronym}/#{self.id}"
+          ont = self.explore.ontology
+          "#{LinkedData::Client.settings.purl_prefix}/#{ont.acronym}/#{CGI.escape(self.id)}"
         end
   
         def self.find(id, ontology, params = {})
