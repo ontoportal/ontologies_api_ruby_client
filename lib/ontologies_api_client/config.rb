@@ -27,7 +27,8 @@ module LinkedData
       @settings.purl_prefix             ||= "http://purl.example.org"
 
       # Remove trailing slash
-      @settings.rest_url = @settings.rest_url.chomp("/")
+      @settings.rest_url    = @settings.rest_url.chomp("/")
+      @settings.purl_prefix = @settings.purl_prefix.chomp("/")
 
       @settings_run = true
     end
