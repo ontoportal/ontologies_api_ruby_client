@@ -9,10 +9,6 @@ module Faraday
     end
     
     def call(env)
-      dup.call!(env)
-    end
-    
-    def call!(env)
       user = Thread.current[:session] && Thread.current[:session][:user] ? Thread.current[:session][:user] : nil
       if user
         headers = env[:request_headers]
@@ -21,6 +17,7 @@ module Faraday
       end
       @app.call(env)
     end
+    
   end
 end
 
