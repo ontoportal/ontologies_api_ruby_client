@@ -4,7 +4,12 @@ require_relative '../http'
 
 module Faraday
   ##
-  # This middleware causes Faraday to return 
+  # This middleware causes Faraday to return
+
+  class ObjectCacheResponse < Faraday::Response
+    attr_accessor :parsed_body
+  end
+
   class ObjectCache < Faraday::Middleware
     def initialize(app, *arguments)
       super(app)
@@ -30,32 +35,35 @@ module Faraday
         puts "DEBUG not expired #{env[:url].to_s}" if $CACHE_DEBUG
         cached_item = cache_read(request_key)
         ld_obj = cached_item.is_a?(Hash) && cached_item.key?(:ld_obj) ? cached_item[:ld_obj] : cached_item
-        return ld_obj
+        env[:status] = 304
+        cached_response = ObjectCacheResponse.new(env)
+        cached_response.parsed_body = ld_obj
+        return cached_response
       end
       
       last_modified = cache_read(last_modified_key)
       headers = env[:request_headers]
       puts "DEBUG last modified: " + last_modified.to_s if last_modified && $CACHE_DEBUG
       headers['If-Modified-Since'] = last_modified if last_modified
-      
-      @app.call(env).on_complete do |requested_env|
-        # Only cache get and head requests
-        if [:get, :head].include?(requested_env[:method])
-          puts "DEBUG response status: " + requested_env[:status].to_s if $CACHE_DEBUG
 
-          last_modified = requested_env[:response_headers]["Last-Modified"]
+      @app.call(env).on_complete do |response_env|
+        # Only cache get and head requests
+        if [:get, :head].include?(response_env[:method])
+          puts "DEBUG response status: " + response_env[:status].to_s if $CACHE_DEBUG
+
+          last_modified = response_env[:response_headers]["Last-Modified"]
 
           # Generate key using header hash
           key = request_key
           
           # If the last retrieve time is less than expiry
-          if requested_env[:status] == 304 && cache_exist?(key)
+          if response_env[:status] == 304 && cache_exist?(key)
             stored_obj = cache_read(key)
             
             # Update if last modified is different
             stored_obj[:last_modified] != last_modified
             if stored_obj[:last_modified] != last_modified
-              puts "UPDATING CACHE #{requested_env[:url].to_s}" if $CACHE_DEBUG
+              puts "UPDATING CACHE #{response_env[:url].to_s}" if $CACHE_DEBUG
               stored_obj[:last_modified] = last_modified
               cache_write(last_modified_key, last_modified)
               cache_write(key, stored_obj)
@@ -63,18 +71,18 @@ module Faraday
             
             ld_obj = stored_obj[:ld_obj]
           else
-            if requested_env[:body].nil? || requested_env[:body].empty?
+            if response_env[:body].nil? || response_env[:body].empty?
               # We got here with an empty body, meaning the object wasn't
               # in the cache (weird). So re-do the request.
-              puts "REDOING REQUEST NO CACHE ENTRY #{requested_env[:url].to_s}"
+              puts "REDOING REQUEST NO CACHE ENTRY #{response_env[:url].to_s}"
               env[:request_headers].delete("If-Modified-Since")
               requested_env = @app.call(env).env
             end
-            ld_obj = LinkedData::Client::HTTP.object_from_json(requested_env[:body])
-            expiry = requested_env[:response_headers]["Cache-Control"].to_s.split("max-age=").last.to_i
+            ld_obj = LinkedData::Client::HTTP.object_from_json(response_env[:body])
+            expiry = response_env[:response_headers]["Cache-Control"].to_s.split("max-age=").last.to_i
             if expiry > 0 && last_modified
               # This request is cacheable, store it
-              puts "STORING OBJECT: #{requested_env[:url].to_s}" if $CACHE_DEBUG
+              puts "STORING OBJECT: #{response_env[:url].to_s}" if $CACHE_DEBUG
               stored_obj = {last_modified: last_modified, ld_obj: ld_obj}
               cache_write(last_modified_key, last_modified)
               cache_write(last_retrieved_key, true, expires_in: expiry)
@@ -82,7 +90,9 @@ module Faraday
             end
           end
 
-          return ld_obj
+          response = ObjectCacheResponse.new(response_env)
+          response.parsed_body = ld_obj
+          return response
         end
       end
     end
