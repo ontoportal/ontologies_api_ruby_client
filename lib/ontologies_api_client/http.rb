@@ -49,10 +49,13 @@ module LinkedData
         end
         LinkedData::Client.settings.conn
       end
-      
-      def self.get(path, params = {})
+
+      def self.get(path, params = {}, options = {})
+        headers = options[:headers] || {}
+        raw = options[:raw] || false # return the unparsed body of the request
         params = params.delete_if {|k,v| v == nil || v.to_s.empty?}
-        
+        params[:ncbo_cache_buster] = Time.now.to_f if raw # raw requests don't get cached to ensure body is available
+
         begin
           puts "Getting: #{path} with #{params}" if $DEBUG
           begin
@@ -60,18 +63,24 @@ module LinkedData
               req.url path
               req.params = params
               req.options[:timeout] = 60
+              req.headers.merge(headers)
             end
           rescue Exception => e
             params = Faraday::Utils.build_query(params)
             path << "?" unless params.empty?
             raise e, "Problem retrieving:\n#{path}#{params}\n\nError: #{e.message}\n#{e.backtrace.join("\n\t")}"
           end
-          response = response.dup if response && response.frozen?
-          return response unless response.kind_of?(Faraday::Response)
-          
-          body = response.body
-          raise Exception, "Problem retrieving:\n#{path}\n#{body}" if response.status >= 500
-          obj = recursive_struct(load_json(body))
+
+          raise Exception, "Problem retrieving:\n#{path}\n#{response.body}" if response.status >= 500
+
+          if raw
+            obj = response.body
+          elsif response.respond_to?(:parsed_body) && response.parsed_body
+            obj = response.parsed_body
+            obj = obj.dup if obj.frozen?
+          else
+            obj = recursive_struct(load_json(response.body))
+          end
         rescue Exception => e
           puts "Problem getting #{path}" if $DEBUG
           raise e
