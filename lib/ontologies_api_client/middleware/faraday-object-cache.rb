@@ -61,7 +61,6 @@ module Faraday
             stored_obj = cache_read(key)
             
             # Update if last modified is different
-            stored_obj[:last_modified] != last_modified
             if stored_obj[:last_modified] != last_modified
               puts "UPDATING CACHE #{response_env[:url].to_s}" if $CACHE_DEBUG
               stored_obj[:last_modified] = last_modified
@@ -76,7 +75,7 @@ module Faraday
               # in the cache (weird). So re-do the request.
               puts "REDOING REQUEST NO CACHE ENTRY #{response_env[:url].to_s}"
               env[:request_headers].delete("If-Modified-Since")
-              requested_env = @app.call(env).env
+              response_env = @app.call(env).env
             end
             ld_obj = LinkedData::Client::HTTP.object_from_json(response_env[:body])
             expiry = response_env[:response_headers]["Cache-Control"].to_s.split("max-age=").last.to_i
