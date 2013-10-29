@@ -65,6 +65,10 @@ module LinkedData
       end
       alias :to_param :to_hash
       
+      def to_jsonld
+        HTTP.get(self.id, {}, {raw: true})
+      end
+
       def marshal_dump
         Hash[self.instance_variables.map { |v| [v, self.instance_variable_get("#{v}")] }]
       end
