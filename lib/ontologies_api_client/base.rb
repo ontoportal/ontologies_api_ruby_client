@@ -4,11 +4,11 @@ module LinkedData
       HTTP = LinkedData::Client::HTTP
       attr_writer :instance_values
       attr_accessor :context, :links
-      
+
       class << self
         attr_accessor :media_type, :include_attrs, :include_attrs_full, :attrs_always_present
       end
-      
+
       ##
       # Passing full: true to explore methods will give you more attributes
       def self.attributes(full = false)
@@ -18,7 +18,7 @@ module LinkedData
           @include_attrs
         end
       end
-      
+
       def self.class_for_type(media_type)
         classes = LinkedData::Client::Models.constants
         classes.each do |cls|
@@ -37,11 +37,11 @@ module LinkedData
         end
         create_attributes(self.class.attrs_always_present || [])
       end
-      
+
       def id
         @id
       end
-      
+
       def type
         @type
       end
@@ -53,7 +53,7 @@ module LinkedData
       def explore
         LinkedData::Client::LinkExplorer.new(@links, self)
       end
-      
+
       def to_hash
         dump = marshal_dump
         dump.keys.each do |k|
@@ -64,7 +64,7 @@ module LinkedData
         dump
       end
       alias :to_param :to_hash
-      
+
       def to_jsonld
         HTTP.get(self.id, {}, {raw: true})
       end
@@ -72,13 +72,13 @@ module LinkedData
       def marshal_dump
         Hash[self.instance_variables.map { |v| [v, self.instance_variable_get("#{v}")] }]
       end
-      
+
       def marshal_load(data)
         data ||= {}
         create_attributes(data.keys)
         populate_attributes(data)
       end
-      
+
       def method_missing(meth, *args, &block)
         if meth.to_s[-1].eql?("=")
           # This enables OpenStruct-like behavior for setting attributes that aren't defined
@@ -89,23 +89,23 @@ module LinkedData
           nil
         end
       end
-      
+
       def respond_to?(meth, private = false)
         true
       end
-      
+
       def [](key)
         key = "@#{key}" unless key.to_s.start_with?("@")
         instance_variable_get(key)
       end
-      
+
       def []=(key, value)
         create_attributes([key])
         populate_attributes({key.to_sym => value})
       end
-      
+
       private
-      
+
       def create_attributes(attributes)
         attributes.each do |attr|
           attr = attr.to_s[1..-1].to_sym if attr.to_s.start_with?("@")
@@ -122,14 +122,14 @@ module LinkedData
           end
         end
       end
-      
+
       def populate_attributes(hash)
         hash.each do |k,v|
           k = "@#{k}" unless k.to_s.start_with?("@")
           instance_variable_set(k, v)
         end
       end
-      
+
     end
   end
 end

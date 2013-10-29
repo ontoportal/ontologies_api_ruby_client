@@ -13,23 +13,23 @@ module Faraday
   class ObjectCache < Faraday::Middleware
     def initialize(app, *arguments)
       super(app)
-      
+
       if arguments.last.is_a? Hash
         options = arguments.pop
         @logger = options.delete(:logger)
       else
         options = arguments
       end
-      
+
       @store = options[:store] || ActiveSupport::Cache.lookup_store(store, options)
     end
-    
+
     def call(env)
       # Add if newer than last modified statement to headers
       request_key = cache_key_for(create_request(env))
       last_modified_key = "LM::#{request_key}"
       last_retrieved_key = "LR::#{request_key}"
-      
+
       # If we made the last request within the expiry
       if cache_exist?(last_retrieved_key) && cache_exist?(request_key)
         puts "DEBUG not expired #{env[:url].to_s}" if $CACHE_DEBUG
@@ -40,7 +40,7 @@ module Faraday
         cached_response.parsed_body = ld_obj
         return cached_response
       end
-      
+
       last_modified = cache_read(last_modified_key)
       headers = env[:request_headers]
       puts "DEBUG last modified: " + last_modified.to_s if last_modified && $CACHE_DEBUG
@@ -55,11 +55,11 @@ module Faraday
 
           # Generate key using header hash
           key = request_key
-          
+
           # If the last retrieve time is less than expiry
           if response_env[:status] == 304 && cache_exist?(key)
             stored_obj = cache_read(key)
-            
+
             # Update if last modified is different
             if stored_obj[:last_modified] != last_modified
               puts "UPDATING CACHE #{response_env[:url].to_s}" if $CACHE_DEBUG
@@ -67,7 +67,7 @@ module Faraday
               cache_write(last_modified_key, last_modified)
               cache_write(key, stored_obj)
             end
-            
+
             ld_obj = stored_obj[:ld_obj]
           else
             if response_env[:body].nil? || response_env[:body].empty?
@@ -95,12 +95,12 @@ module Faraday
         end
       end
     end
-    
+
     private
-    
+
     def cache_write(key, obj, *args)
       result = @store.write(key, obj, *args)
-      
+
       if result
         return result
       else
@@ -116,7 +116,7 @@ module Faraday
         return true
       end
     end
-    
+
     def cache_read(key)
       obj = @store.read(key)
       return if obj.nil?
@@ -129,11 +129,11 @@ module Faraday
       end
       obj.dup
     end
-    
+
     def cache_exist?(key)
       @store.exist?(key)
     end
-    
+
     class MultiMemcache; attr_accessor :parts; end
 
     ##
@@ -156,7 +156,7 @@ module Faraday
       parts.each_with_index {|p,i| @store.write("#{key}:p#{i}", p, *args)}
       @store.write(key, mm, *args)
     end
-    
+
     ##
     # Read out a multipart cache object
     def cache_read_multi(key)
@@ -182,7 +182,7 @@ module Faraday
       array = request.stringify_keys.to_a.sort
       Digest::SHA1.hexdigest(Marshal.dump(array))
     end
-    
+
     # Internal: Creates a new 'Hash' containing the request information.
     #
     # env - the environment 'Hash' from the Faraday stack.
@@ -194,13 +194,13 @@ module Faraday
       request[:request_headers] = request[:request_headers].dup
       request
     end
-    
+
     def clean_request_headers(request)
       request[:request_headers].delete("If-Modified-Since")
       request[:request_headers].delete("Expect")
       request
     end
-    
+
   end
 end
 

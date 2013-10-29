@@ -5,12 +5,12 @@ module LinkedData
   module Client
     class LinkExplorer
       HTTP = LinkedData::Client::HTTP
-      
+
       def initialize(links, instance)
         @links = links
         @instance = instance
       end
-      
+
       def method_missing(meth, *args, &block)
         if combined_links.key?(meth.to_s)
           explore_link(meth, *args)
@@ -20,7 +20,7 @@ module LinkedData
           super
         end
       end
-      
+
       def respond_to?(meth, private = false)
         if combined_links.key?(meth.to_s) || meth == :batch
           return true
@@ -28,7 +28,7 @@ module LinkedData
           super
         end
       end
-      
+
       def explore_link(*args)
         link = combined_links[args.shift.to_s]
         params = args.shift
@@ -49,13 +49,13 @@ module LinkedData
           HTTP.get(url, params)
         end
       end
-      
+
       def combined_links
         linkable_attributes.merge(@links)
       end
 
       private
-      
+
       def replace_template_elements(url, values = [])
         return url if values.nil? || values.empty?
         values = values.dup
@@ -64,7 +64,7 @@ module LinkedData
           CGI.escape(values.shift)
         end
       end
-      
+
       def linkable_attributes
         linkable = {}
         (@instance.context || {}).each do |attr, val|

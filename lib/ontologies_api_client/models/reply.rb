@@ -7,11 +7,11 @@ module LinkedData
         include LinkedData::Client::Collection
         include LinkedData::Client::ReadWrite
         @media_type = "http://data.bioontology.org/metadata/Reply"
-        
+
         def deletable?(user)
           false
         end
-        
+
         def uuid
           self.id.split("/").last
         end

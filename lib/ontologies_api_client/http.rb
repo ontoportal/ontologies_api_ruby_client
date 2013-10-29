@@ -20,15 +20,15 @@ class OpenStruct
     @table.keys.length
   end
   alias :size :length
-  
+
   def to_a
     @table.to_a
   end
-  
+
   def values
     @table.values
   end
-  
+
   def values_at(*selectors)
     @table.values.values_at(*selectors)
   end
@@ -87,7 +87,7 @@ module LinkedData
         end
         obj
       end
-      
+
       def self.get_batch(paths, params = {})
         responses = []
         if conn.in_parallel?
@@ -99,14 +99,14 @@ module LinkedData
         end
         return responses
       end
-      
+
       def self.post(path, obj)
         obj = params_file_handler(obj)
         response = conn.post path, obj
         raise Exception, response.body if response.status >= 500
         recursive_struct(load_json(response.body))
       end
-      
+
       def self.put(path, obj)
         obj = params_file_handler(obj)
         response = conn.put path, obj
@@ -114,25 +114,25 @@ module LinkedData
         raise Exception, response.body if response.status >= 500
         recursive_struct(load_json(response.body))
       end
-      
+
       def self.patch(path, params)
         params = params_file_handler(params)
         response = conn.patch path, params
         raise Exception, response.body if response.status >= 500
       end
-      
+
       def self.delete(id)
         puts "Deleting #{id}" if $DEBUG
         response = conn.delete id
         raise Exception, response.body if response.status >= 500
       end
-      
+
       def self.object_from_json(json)
         recursive_struct(load_json(json))
       end
-      
+
       private
-      
+
       def self.params_file_handler(params)
         return if params.nil?
         params.dup.each do |attribute, value|
@@ -141,7 +141,7 @@ module LinkedData
         end
         params
       end
-      
+
       def self.threaded_request(paths, params)
         threads = []
         responses = []
@@ -153,7 +153,7 @@ module LinkedData
         threads.join
         responses
       end
-      
+
       def self.recursive_struct(json_obj)
         # TODO: Convert dates to date objects
         if json_obj.is_a?(Hash)
@@ -162,12 +162,12 @@ module LinkedData
           value_cls = LinkedData::Client::Base.class_for_type(json_obj["@type"])
           links = prep_links(json_obj) # strip links
           context = json_obj.delete("@context") # strip context
-          
+
           # Create a struct with the left-over attributes to store data
           attributes = json_obj.keys.map {|k| k.to_sym}
           attributes_always_present = value_cls.attrs_always_present || [] rescue []
           attributes = (attributes + attributes_always_present).uniq
-          
+
           # Add attributes to instance
           if value_cls
             instance = value_cls.new
@@ -182,7 +182,7 @@ module LinkedData
                 end
               end
             end
-            
+
             # Create objects for each key/value pair, recursively
             json_obj.each do |attr, value|
               attr = attr[1..-1] if attr[0].eql?("@")
@@ -196,7 +196,7 @@ module LinkedData
             end
             instance = OpenStruct.new(recursive_obj_hash)
           end
-          
+
           # Assign links/context
           instance.links = links if links
           instance.context = context if context
@@ -210,11 +210,11 @@ module LinkedData
         end
         instance
       end
-      
+
       def self.prep_links(obj)
         links = obj.delete(LinkedData::Client.settings.links_attr)
         return if links.nil?
-        
+
         context = links.delete("@context")
         return if context.nil?
         links.keys.each do |link_type|
@@ -224,7 +224,7 @@ module LinkedData
         end
         links
       end
-        
+
       def self.load_json(json)
         begin
           MultiJson.load(json)
@@ -232,7 +232,7 @@ module LinkedData
           raise e, "Problem loading json\n#{json}"
         end
       end
-      
+
       def self.dump_json(json)
         MultiJson.dump(json)
       end

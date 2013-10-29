@@ -20,14 +20,14 @@ module LinkedData
           ont.explore.reviews
         end
       end
-      
+
       def test_batch_explore_ontologies
         # onts = LinkedData::Client::Models::Ontology.all
         # onts.each do |ont|
         #   projects, groups, categories = LinkedData::Client::HTTP.get_batch([ont.links["projects"], ont.links["groups"], ont.links["categories"]])
         # end
       end
-      
+
     end
   end
 end

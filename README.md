@@ -14,7 +14,7 @@ Configuration is provided by calling the <code>config</code> method
       config.links_attr = "links"
       config.cache      = false
     end
-    
+
 ## Usage
 
 Once configured, you can utilize the existing resources that are defined (see <code>lib/ontologies_api_client/models</code>)
@@ -32,20 +32,20 @@ To retrieve a single record by id:
 
 ***Where***
 
-To retrieve all records that match a particular an in-code filter. The code is a block that should return a 
+To retrieve all records that match a particular an in-code filter. The code is a block that should return a
 boolean that indicates whether or not the item should be included in the results.
 
     categories = Category.where do |ont|
       ont.name.include?("health")
     end
-    
+
 ***Find By***
 
 You can use shortcut methods to find by particular attribute/value pairs
 (attributes are named in the method and multiple can be provided by connecting them with 'and').
 
     categories = Category.find_by_parentCategory("http://data.bioontology.org/categories/anatomy")
-    
+
 ## Hypermedia Navigation
 
 All resources have a collection of hypermedia links, available by calling the 'links' method.
@@ -53,7 +53,7 @@ These links can be navigated by calling the 'explore' method and chaining the li
 
     ontology = Category.find("http://data.bioontology.org/categories/all_organisms")
     classes = ontology.explore.classes
-    
+
 Links may contain a [URI template](http://tools.ietf.org/html/rfc6570). In this case, the template can be
 populated by passing in ordered values for the template tokens:
 
@@ -61,7 +61,7 @@ populated by passing in ordered values for the template tokens:
 
 ## Defining Resources
 
-The client is designed to consume resources from the [NCBO Ontologies API](https://github.com/ncbo/ontologies_api). 
+The client is designed to consume resources from the [NCBO Ontologies API](https://github.com/ncbo/ontologies_api).
 Resources are defined in the client using media types that we know about and
 providing attribute names that we want to retreive for each media type.
 

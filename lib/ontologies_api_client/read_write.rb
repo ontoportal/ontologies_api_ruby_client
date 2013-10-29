@@ -7,13 +7,13 @@ module LinkedData
         # Create via post
         HTTP.post(self.class.collection_path, self.to_hash)
       end
-      
+
       def update(options = {})
         values = options[:values] || changed_values()
         return if values.empty?
         HTTP.patch(self.id, values)
       end
-      
+
       def update_from_params(params)
         # We want to populate ALL the attributes from the REST
         # service so we know that what we're updating is
@@ -29,7 +29,7 @@ module LinkedData
         end
         self
       end
-      
+
       def changed_values
         existing = HTTP.get(self.id, include: "all")
         changed_attrs = {}
@@ -42,13 +42,13 @@ module LinkedData
         end
         changed_attrs
       end
-      
+
       def delete
         HTTP.delete(self.id)
       end
-      
+
       private
-      
+
       def equivalent?(current_value, new_value)
         # If we're comparing an existing embedded object
         # then use the id for comparison
@@ -72,7 +72,7 @@ module LinkedData
         end
         return current_value.eql?(new_value) rescue current_value == new_value
       end
-      
+
     end
   end
 end

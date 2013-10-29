@@ -3,11 +3,11 @@ module Faraday
     def initialize(app, *arguments)
       super(app)
     end
-    
+
     def call(env)
       dup.call!(env)
     end
-    
+
     def call!(env)
       start = Time.now
       data = @app.call(env)

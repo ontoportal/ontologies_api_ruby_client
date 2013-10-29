@@ -7,14 +7,14 @@ module LinkedData
       class Ontology < LinkedData::Client::Base
         include LinkedData::Client::Collection
         include LinkedData::Client::ReadWrite
-  
+
         @media_type = "http://data.bioontology.org/metadata/Ontology"
         @include_attrs    = "all"
-  
+
         def flat?
           self.flat
         end
-  
+
         def private?
           viewingRestriction && viewingRestriction.downcase.eql?("private")
         end
@@ -22,11 +22,11 @@ module LinkedData
         def licensed?
           viewingRestriction && viewingRestriction.downcase.eql?("licensed")
         end
-        
+
         def viewing_restricted?
           private? && licensed?
         end
-        
+
         def view?
           viewOf && viewOf.length > 1
         end
@@ -38,13 +38,13 @@ module LinkedData
             ""
           end
         end
-        
+
         def admin?(user)
           return false if user.nil?
           return true if user.admin?
           return administeredBy.any? {|u| u == user.id}
         end
-        
+
         # For use with select lists, always includes the admin by default
         def acl_select
           select_opts = []
@@ -62,7 +62,7 @@ module LinkedData
 
           (select_opts + self.administeredBy).uniq
         end
-        
+
         ##
         # Find a resource by a combination of attributes
         # Override to search for views as well by default
@@ -79,7 +79,7 @@ module LinkedData
           args.unshift(params)
           super(attrs, *args)
         end
-        
+
         ##
         # Find a resource by id
         # Override to search for views as well by default
@@ -89,7 +89,7 @@ module LinkedData
           params[:include_views] = params[:include_views] || true
           super(id, params)
         end
-        
+
       end
     end
   end

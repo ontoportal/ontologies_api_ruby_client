@@ -32,7 +32,7 @@ module LinkedData
 
       @settings_run = true
     end
-    
+
     def config_connection(options = {})
       return if @settings_run_connection
       store = options[:cache_store]
@@ -68,7 +68,7 @@ module LinkedData
       end
       @settings_run_connection = true
     end
-    
+
     def connection_configured?
       @settings_run_connection
     end

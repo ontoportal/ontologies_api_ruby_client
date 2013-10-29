@@ -2,12 +2,12 @@ require_relative '../http'
 
 module Faraday
   ##
-  # This middleware causes Faraday to return 
+  # This middleware causes Faraday to return
   class UserApikey < Faraday::Middleware
     def initialize(app, *arguments)
       super(app)
     end
-    
+
     def call(env)
       user = Thread.current[:session] && Thread.current[:session][:user] ? Thread.current[:session][:user] : nil
       if user
@@ -17,7 +17,7 @@ module Faraday
       end
       @app.call(env)
     end
-    
+
   end
 end
 
