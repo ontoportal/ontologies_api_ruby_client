@@ -134,7 +134,7 @@ module Faraday
       @store.exist?(key)
     end
 
-    class MultiMemcache; attr_accessor :parts; end
+    class MultiMemcache; attr_accessor :parts, :key; end
 
     ##
     # This wraps memcache in a method that will split large objects
@@ -153,7 +153,8 @@ module Faraday
         position += chunk
       end
       mm.parts = parts.length
-      parts.each_with_index {|p,i| @store.write("#{key}:p#{i}", p, *args)}
+      mm.key = Digest::SHA1.hexdigest(dump)
+      parts.each_with_index {|p,i| @store.write("#{mm.key}:p#{i}", p, *args)}
       @store.write(key, mm, *args)
     end
 
@@ -164,10 +165,10 @@ module Faraday
       if obj.is_a?(MultiMemcache)
         keys = []
         obj.parts.times do |i|
-          keys << "#{key}:p#{i}"
+          keys << "#{obj.key}:p#{i}"
         end
         parts = @store.read_multi(keys).values.join
-        obj = Marshal.load(parts)
+        obj = Marshal.load(parts) rescue binding.pry
       end
       obj
     end
