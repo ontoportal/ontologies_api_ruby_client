@@ -67,7 +67,7 @@ module LinkedData
             end
           rescue Exception => e
             params = Faraday::Utils.build_query(params)
-            path << "?" unless params.empty?
+            path << "?" unless params.empty? || path.include?("?")
             raise e, "Problem retrieving:\n#{path}#{params}\n\nError: #{e.message}\n#{e.backtrace.join("\n\t")}"
           end
 
