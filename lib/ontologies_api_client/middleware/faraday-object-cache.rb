@@ -168,7 +168,7 @@ module Faraday
           keys << "#{obj.key}:p#{i}"
         end
         parts = @store.read_multi(keys).values.join
-        obj = Marshal.load(parts) rescue binding.pry
+        obj = Marshal.load(parts)
       end
       obj
     end
