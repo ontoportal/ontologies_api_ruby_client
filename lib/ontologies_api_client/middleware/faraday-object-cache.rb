@@ -142,20 +142,28 @@ module Faraday
     # value size. The corresponding cache_read_multi will read out
     # the objects.
     def cache_write_multi(key, obj, *args)
-      dump = Marshal.dump(obj)
-      chunk = 1_000_000
-      mm = MultiMemcache.new
-      parts = []
-      part_count = (dump.bytesize / chunk) + 1
-      position = 0
-      part_count.times do
-        parts << dump[position..position+chunk-1]
-        position += chunk
+      lock_key = "lock:#{key}"
+      puts "\n\n\n\n\nLOCKED !!! !!!\n\n\n\n\n" if @store.read(lock_key)
+      return if @store.read(lock_key)
+      begin
+        @store.write(lock_key, true)
+        dump = Marshal.dump(obj)
+        chunk = 1_000_000
+        mm = MultiMemcache.new
+        parts = []
+        part_count = (dump.bytesize / chunk) + 1
+        position = 0
+        part_count.times do
+          parts << dump[position..position+chunk-1]
+          position += chunk
+        end
+        mm.parts = parts.length
+        mm.key = Digest::SHA1.hexdigest(dump)
+        parts.each_with_index {|p,i| @store.write("#{mm.key}:p#{i}", p, *args)}
+        @store.write(key, mm, *args)
+      ensure
+        @store.delete(lock_key)
       end
-      mm.parts = parts.length
-      mm.key = Digest::SHA1.hexdigest(dump)
-      parts.each_with_index {|p,i| @store.write("#{mm.key}:p#{i}", p, *args)}
-      @store.write(key, mm, *args)
     end
 
     ##
