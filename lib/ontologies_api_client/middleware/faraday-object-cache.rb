@@ -161,6 +161,9 @@ module Faraday
         mm.key = Digest::SHA1.hexdigest(dump)
         parts.each_with_index {|p,i| @store.write("#{mm.key}:p#{i}", p, *args)}
         @store.write(key, mm, *args)
+      rescue Exception
+        parts.each_with_index {|p,i| @store.delete("#{mm.key}:p#{i}")} if parts
+        @store.delete(key) if key
       ensure
         @store.delete(lock_key)
       end
