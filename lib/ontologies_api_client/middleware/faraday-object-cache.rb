@@ -1,5 +1,6 @@
 require 'digest/sha1'
 require 'active_support/cache'
+require 'lz4-ruby'
 require_relative '../http'
 
 module Faraday
@@ -112,7 +113,7 @@ module Faraday
         # in memory yet.
         @large_object_cache ||= {}
         @large_object_cache[key] = obj
-        cache_write_multi(key, obj, *args)
+        cache_write_compressed(key, obj, *args)
         return true
       end
     end
@@ -120,11 +121,11 @@ module Faraday
     def cache_read(key)
       obj = @store.read(key)
       return if obj.nil?
-      if obj.is_a?(MultiMemcache)
+      if obj.is_a?(CompressedMemcache)
         # Try to get from the large object cache
         large_obj = @large_object_cache[key] if @large_object_cache
         # Fallback to the memcache version
-        large_obj ||= cache_read_multi(key)
+        large_obj ||= cache_read_compressed(key)
         obj = large_obj
       end
       obj.dup
@@ -135,6 +136,7 @@ module Faraday
     end
 
     class MultiMemcache; attr_accessor :parts, :key; end
+    class CompressedMemcache; end
 
     ##
     # This wraps memcache in a method that will split large objects
@@ -183,6 +185,30 @@ module Faraday
       end
       obj
     end
+
+    ##
+    # Compress cache entry
+    def cache_write_compressed(key, obj, *args)
+      t0 = Time.now
+      compressed = LZ4::compress(Marshal.dump(obj))
+      puts "\n\n\nCOMPRESSED ######################## #{Time.now - t0}s, #{compressed.bytesize / 1048576.0} MB"
+      @store.write(key, CompressedMemcache.new)
+      @store.write("#{key}::LZ4", compressed)
+    end
+
+    ##
+    # Read compressed cache entry
+    def cache_read_compressed(key)
+      obj = @store.read(key)
+      if obj.is_a?(CompressedMemcache)
+        t0 = Time.now
+        uncompressed = LZ4::uncompress(@store.read("#{key}::LZ4"))
+        puts "\n\n\nDECOMPRESSED ######################## #{Time.now - t0}s"
+        obj = Marshal.load(uncompressed)
+      end
+      obj
+    end
+
 
     # Internal: Generates a String key for a given request object.
     # The request object is folded into a sorted Array (since we can't count

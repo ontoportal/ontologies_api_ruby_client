@@ -16,6 +16,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency('oj', '<= 2.0.14')
   gem.add_dependency('faraday')
   gem.add_dependency('excon')
+  gem.add_dependency('lz4-ruby')
 
   # gem.executables = %w()
 end
