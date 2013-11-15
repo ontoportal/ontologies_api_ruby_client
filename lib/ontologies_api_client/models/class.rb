@@ -8,14 +8,17 @@ module LinkedData
         require 'cgi'
         HTTP = LinkedData::Client::HTTP
         @media_type = "http://www.w3.org/2002/07/owl#Class"
-        @include_attrs = "prefLabel,definition,synonym,childrenCount"
-        @include_attrs_full = "prefLabel,definition,synonym,properties,childrenCount,children"
-        @attrs_always_present = :prefLabel, :definition, :synonym, :properties, :childrenCount, :children
+        @include_attrs = "prefLabel,definition,synonym,deprecated,childrenCount"
+        @include_attrs_full = "prefLabel,definition,synonym,deprecated,properties,childrenCount,children"
+        @attrs_always_present = :prefLabel, :definition, :synonym, :deprecated, :properties, :childrenCount, :children
 
         alias :fullId :id
 
+        def obsolete?
+          self.deprecated
+        end
+
         # TODO: Implement properly
-        def obsolete?; false; end
         def relation_icon; ""; end
 
         def purl
