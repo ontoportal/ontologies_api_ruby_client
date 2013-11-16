@@ -14,9 +14,17 @@ module LinkedData
 
         alias :fullId :id
 
+        # triple store predicate is <http://www.w3.org/2002/07/owl#deprecated>
         def obsolete?
           self.obsolete
-          # triple store predicate is <http://www.w3.org/2002/07/owl#deprecated>
+        end
+
+        def prefLabel_to_html
+          if self.obsolete?
+            return "<span class='prefLabel-obsolete'>#{self.prefLabel}</span>"
+          else
+            return "<span class='prefLabel-current'>#{self.prefLabel}</span>"
+          end
         end
 
         # TODO: Implement properly
