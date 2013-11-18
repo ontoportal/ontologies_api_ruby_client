@@ -8,14 +8,26 @@ module LinkedData
         require 'cgi'
         HTTP = LinkedData::Client::HTTP
         @media_type = "http://www.w3.org/2002/07/owl#Class"
-        @include_attrs = "prefLabel,definition,synonym,childrenCount"
-        @include_attrs_full = "prefLabel,definition,synonym,properties,childrenCount,children"
-        @attrs_always_present = :prefLabel, :definition, :synonym, :properties, :childrenCount, :children
+        @include_attrs = "prefLabel,definition,synonym,obsolete,childrenCount"
+        @include_attrs_full = "prefLabel,definition,synonym,obsolete,properties,childrenCount,children"
+        @attrs_always_present = :prefLabel, :definition, :synonym, :obsolete, :properties, :childrenCount, :children
 
         alias :fullId :id
 
+        # triple store predicate is <http://www.w3.org/2002/07/owl#deprecated>
+        def obsolete?
+          self.obsolete
+        end
+
+        def prefLabel_to_html
+          if self.obsolete?
+            return "<span class='prefLabel-obsolete'>#{self.prefLabel}</span>"
+          else
+            return "<span class='prefLabel-current'>#{self.prefLabel}</span>"
+          end
+        end
+
         # TODO: Implement properly
-        def obsolete?; false; end
         def relation_icon; ""; end
 
         def purl
