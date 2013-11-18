@@ -136,7 +136,7 @@ module Faraday
     end
 
     class MultiMemcache; attr_accessor :parts, :key; end
-    class CompressedMemcache; end
+    class CompressedMemcache; attr_accessor :key; end
 
     ##
     # This wraps memcache in a method that will split large objects
@@ -189,11 +189,16 @@ module Faraday
     ##
     # Compress cache entry
     def cache_write_compressed(key, obj, *args)
-      t0 = Time.now
       compressed = LZ4::compress(Marshal.dump(obj))
-      puts "\n\n\nCOMPRESSED ######################## #{Time.now - t0}s, #{compressed.bytesize / 1048576.0} MB"
-      @store.write(key, CompressedMemcache.new)
-      @store.write("#{key}::LZ4", compressed)
+      placeholder = CompressedMemcache.new
+      placeholder.key = "#{key}::#{(Time.now.to_f * 1000).to_i}::LZ4"
+      begin
+        @store.write(key, placeholder)
+        @store.write(placeholder.key, compressed)
+      rescue
+        @store.delete(key)
+        @store.delete(placeholder.key)
+      end
     end
 
     ##
@@ -201,9 +206,7 @@ module Faraday
     def cache_read_compressed(key)
       obj = @store.read(key)
       if obj.is_a?(CompressedMemcache)
-        t0 = Time.now
-        uncompressed = LZ4::uncompress(@store.read("#{key}::LZ4"))
-        puts "\n\n\nDECOMPRESSED ######################## #{Time.now - t0}s"
+        uncompressed = LZ4::uncompress(@store.read(obj.key))
         obj = Marshal.load(uncompressed)
       end
       obj
