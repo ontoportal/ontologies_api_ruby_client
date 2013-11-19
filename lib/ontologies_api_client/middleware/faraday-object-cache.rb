@@ -207,8 +207,15 @@ module Faraday
     def cache_read_compressed(key)
       obj = @store.read(key)
       if obj.is_a?(CompressedMemcache)
-        uncompressed = LZ4::uncompress(@store.read(obj.key))
-        obj = Marshal.load(uncompressed)
+        begin
+          uncompressed = LZ4::uncompress(@store.read(obj.key))
+          obj = Marshal.load(uncompressed)
+        rescue StandardError => e
+          # There is a problem with the stored value, let's remove it so we don't get the error again
+          @store.delete(key)
+          @store.delete(obj.key)
+          raise e
+        end
       end
       obj
     end
