@@ -190,6 +190,7 @@ module Faraday
     # Compress cache entry
     def cache_write_compressed(key, obj, *args)
       compressed = LZ4::compress(Marshal.dump(obj))
+      return if compressed.nil?
       placeholder = CompressedMemcache.new
       placeholder.key = "#{key}::#{(Time.now.to_f * 1000).to_i}::LZ4"
       begin
