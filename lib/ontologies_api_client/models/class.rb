@@ -20,10 +20,10 @@ module LinkedData
         end
 
         def prefLabel_to_html
-          if self.obsolete?
+          if self.obsolete
             return "<span class='prefLabel-obsolete'>#{self.prefLabel}</span>"
           else
-            return "<span class='prefLabel-current'>#{self.prefLabel}</span>"
+            return "<span class='prefLabel'>#{self.prefLabel}</span>"
           end
         end
 
