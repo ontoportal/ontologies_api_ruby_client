@@ -101,23 +101,31 @@ module LinkedData
       end
 
       def self.post(path, obj)
-        obj = params_file_handler(obj)
-        response = conn.post path, obj
+        file, file_attribute = params_file_handler(obj)
+        response = conn.post do |req|
+          req.url path
+          custom_req(obj, file, file_attribute, req)
+        end
         raise Exception, response.body if response.status >= 500
         recursive_struct(load_json(response.body))
       end
 
       def self.put(path, obj)
-        obj = params_file_handler(obj)
-        response = conn.put path, obj
-        recursive_struct(load_json(response.body))
+        file, file_attribute = params_file_handler(obj)
+        response = conn.put do |req|
+          req.url path
+          custom_req(obj, file, file_attribute, req)
+        end
         raise Exception, response.body if response.status >= 500
         recursive_struct(load_json(response.body))
       end
 
-      def self.patch(path, params)
-        params = params_file_handler(params)
-        response = conn.patch path, params
+      def self.patch(path, obj)
+        file, file_attribute = params_file_handler(obj)
+        response = conn.patch do |req|
+          req.url path
+          custom_req(obj, file, file_attribute, req)
+        end
         raise Exception, response.body if response.status >= 500
       end
 
@@ -133,13 +141,37 @@ module LinkedData
 
       private
 
+      def self.custom_req(obj, file, file_attribute, req)
+        req.headers['Content-Type'] = 'application/json'
+
+        if file
+          # multipart
+          boundary = "OntologiesAPIMultipartPost"
+          req.headers['Content-Type'] = "multipart/mixed; boundary=#{boundary}; type=application/json; start=json"
+          parts = []
+          parts << Faraday::Parts::Part.new(boundary, "json\"\r\nContent-Type: \"application/json; charset=UTF-8", MultiJson.dump(obj))
+          parts << Faraday::Parts::Part.new(boundary, file_attribute, file)
+          parts << Faraday::Parts::EpiloguePart.new(boundary)
+          req.body = Faraday::CompositeReadIO.new(parts)
+          req.headers["Content-Length"] = req.body.length.to_s
+        else
+          # normal
+          req.body = MultiJson.dump(obj)
+        end
+
+        true
+      end
+
       def self.params_file_handler(params)
         return if params.nil?
+        file, return_attribute = nil, nil
         params.dup.each do |attribute, value|
           next unless value.is_a?(File) || value.is_a?(Tempfile)
-          params[attribute] = Faraday::UploadIO.new(value.path, "text/plain")
+          file = Faraday::UploadIO.new(value.path, "text/plain")
+          return_attribute = attribute
+          params.delete(attribute)
         end
-        params
+        return file, return_attribute
       end
 
       def self.threaded_request(paths, params)
