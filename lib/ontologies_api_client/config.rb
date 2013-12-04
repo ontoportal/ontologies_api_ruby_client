@@ -45,6 +45,9 @@ module LinkedData
         require_relative 'middleware/faraday-user-apikey'
         faraday.use :user_apikey
 
+        require_relative 'middleware/faraday-slices'
+        faraday.use :ncbo_slices
+
         if @settings.cache
           begin
             require_relative 'middleware/faraday-object-cache'
