@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     ontologies_api_client (0.0.2)
+      activesupport (<= 3.0)
       excon
       faraday
       lz4-ruby
@@ -11,6 +12,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
+    activesupport (2.3.17)
     coderay (1.1.0)
     excon (0.29.0)
     faraday (0.8.8)
