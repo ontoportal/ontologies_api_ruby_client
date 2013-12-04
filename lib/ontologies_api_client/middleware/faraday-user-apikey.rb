@@ -1,5 +1,3 @@
-require_relative '../http'
-
 module Faraday
   ##
   # This middleware causes Faraday to return
