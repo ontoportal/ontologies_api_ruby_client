@@ -167,7 +167,8 @@ module LinkedData
         file, return_attribute = nil, nil
         params.dup.each do |attribute, value|
           next unless value.is_a?(File) || value.is_a?(Tempfile)
-          file = Faraday::UploadIO.new(value.path, "text/plain")
+          filename = value.original_filename
+          file = Faraday::UploadIO.new(value.path, "text/plain", filename)
           return_attribute = attribute
           params.delete(attribute)
         end
