@@ -34,6 +34,10 @@ module LinkedData
         # TODO: Implement properly
         def relation_icon; ""; end
 
+        def to_jsonld
+          HTTP.get(self.links["self"], {}, {raw: true}) rescue binding.pry
+        end
+
         def purl
           return "" if self.links.nil?
           ont = self.explore.ontology
