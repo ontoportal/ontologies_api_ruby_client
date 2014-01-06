@@ -263,6 +263,7 @@ module LinkedData
       end
 
       def self.load_json(json)
+        return if json.nil? || json.empty?
         begin
           MultiJson.load(json)
         rescue Exception => e
