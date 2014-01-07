@@ -35,7 +35,7 @@ module LinkedData
         def relation_icon; ""; end
 
         def to_jsonld
-          HTTP.get(self.links["self"], {}, {raw: true}) rescue binding.pry
+          HTTP.get(self.links["self"], {}, {raw: true})
         end
 
         def purl
