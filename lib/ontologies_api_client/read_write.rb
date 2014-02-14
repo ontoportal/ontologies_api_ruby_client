@@ -65,8 +65,8 @@ module LinkedData
         when Array, Hash
           new_value = nil if new_value.is_a?(Array) && new_value.empty? && current_value.nil?
           if new_value.is_a?(Array) && new_value.first.is_a?(Hash)
-            clean_current = current_value.map {|e| e.to_h.symbolize_keys.delete_if {|k,v| v.nil?}}.sort
-            clean_new = new_value.map {|e| e.symbolize_keys.delete_if {|k,v| v.nil?}}.sort
+            clean_current = current_value.map {|e| e.to_h.symbolize_keys.delete_if {|k,v| v.nil?}}.sort_by {|e| e.is_a?(Hash) ? e.values.sort : e}
+            clean_new = new_value.map {|e| e.symbolize_keys.delete_if {|k,v| v.nil?}}.sort_by {|e| e.is_a?(Hash) ? e.values.sort : e}
             return clean_current.eql?(clean_new) rescue clean_current == clean_new
           else
             return current_value.sort.eql?(new_value.sort) rescue current_value == new_value
