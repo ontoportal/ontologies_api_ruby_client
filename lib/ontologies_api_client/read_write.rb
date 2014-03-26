@@ -6,14 +6,17 @@ module LinkedData
       HTTP = LinkedData::Client::HTTP
 
       def save
-        # Create via post
-        HTTP.post(self.class.collection_path, self.to_hash)
+        resp = HTTP.post(self.class.collection_path, self.to_hash)
+        invalidate_cache()
+        resp
       end
 
       def update(options = {})
         values = options[:values] || changed_values()
         return if values.empty?
-        HTTP.patch(self.id, values)
+        resp = HTTP.patch(self.id, values)
+        invalidate_cache()
+        resp
       end
 
       def update_from_params(params)
@@ -73,6 +76,11 @@ module LinkedData
           end
         end
         return current_value.eql?(new_value) rescue current_value == new_value
+      end
+
+      def invalidate_cache
+        self.class.all(invalidate_cache: true)
+        HTTP.get(self.id, invalidate_cache: true)
       end
 
     end

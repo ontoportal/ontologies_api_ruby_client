@@ -4,13 +4,15 @@ require 'lz4-ruby'
 require_relative '../http'
 
 module Faraday
-  ##
-  # This middleware causes Faraday to return
-
   class ObjectCacheResponse < Faraday::Response
     attr_accessor :parsed_body
   end
 
+  ##
+  # This middleware causes Faraday to return an actual object instead of a response
+  # This is done so that the object is cached instead of the unparsed json body.
+  # Otherwise, we have to re-parse the json on every cache hit, which is extrememly costly
+  # when compared to unmarshaling an object.
   class ObjectCache < Faraday::Middleware
     def initialize(app, *arguments)
       super(app)
@@ -26,10 +28,20 @@ module Faraday
     end
 
     def call(env)
+      invalidate_cache = env[:request_headers].delete(:invalidate_cache)
+
       # Add if newer than last modified statement to headers
       request_key = cache_key_for(create_request(env))
       last_modified_key = "LM::#{request_key}"
       last_retrieved_key = "LR::#{request_key}"
+
+      # If we invalidate the cache, then it forces a clean request
+      if invalidate_cache
+        cache_delete(request_key)
+        cache_delete(last_modified_key)
+        cache_delete(last_retrieved_key)
+        return
+      end
 
       # If we made the last request within the expiry
       if cache_exist?(last_retrieved_key) && cache_exist?(request_key)
@@ -171,6 +183,9 @@ module Faraday
       obj
     end
 
+    def cache_delete(key)
+      @store.delete(key)
+    end
 
     # Internal: Generates a String key for a given request object.
     # The request object is folded into a sorted Array (since we can't count
