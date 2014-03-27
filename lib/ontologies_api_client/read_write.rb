@@ -82,7 +82,7 @@ module LinkedData
 
       def invalidate_cache
         self.class.all(invalidate_cache: true)
-        HTTP.get(self.id, invalidate_cache: true)
+        HTTP.get(self.id, invalidate_cache: true) if self.id
       end
 
     end
