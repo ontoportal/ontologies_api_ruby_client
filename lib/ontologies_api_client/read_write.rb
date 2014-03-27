@@ -49,7 +49,9 @@ module LinkedData
       end
 
       def delete
-        HTTP.delete(self.id)
+        resp = HTTP.delete(self.id)
+        invalidate_cache()
+        resp
       end
 
       private
