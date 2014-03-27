@@ -40,7 +40,7 @@ module Faraday
         cache_delete(request_key)
         cache_delete(last_modified_key)
         cache_delete(last_retrieved_key)
-        return
+        env[:request_headers]["Cache-Control"] = "no-cache"
       end
 
       # If we made the last request within the expiry

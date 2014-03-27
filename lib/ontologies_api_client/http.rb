@@ -67,8 +67,6 @@ module LinkedData
               req.headers.merge(headers)
               req.headers[:invalidate_cache] = invalidate_cache
             end
-
-            return if invalidate_cache
           rescue Exception => e
             params = Faraday::Utils.build_query(params)
             path << "?" unless params.empty? || path.include?("?")
