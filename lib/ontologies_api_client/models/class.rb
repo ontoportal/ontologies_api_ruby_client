@@ -1,11 +1,10 @@
-require "cgi"
+require "uri"
 require_relative "../base"
 
 module LinkedData
   module Client
     module Models
       class Class < LinkedData::Client::Base
-        require 'cgi'
         HTTP = LinkedData::Client::HTTP
         @media_type = "http://www.w3.org/2002/07/owl#Class"
         @include_attrs = "prefLabel,definition,synonym,obsolete,childrenCount"
@@ -41,12 +40,12 @@ module LinkedData
         def purl
           return "" if self.links.nil?
           ont = self.explore.ontology
-          "#{LinkedData::Client.settings.purl_prefix}/#{ont.acronym}/#{CGI.escape(self.id)}"
+          "#{LinkedData::Client.settings.purl_prefix}/#{ont.acronym}/#{URI.escape(self.id)}"
         end
 
         def self.find(id, ontology, params = {})
           ontology = HTTP.get(ontology, params)
-          ontology.explore.class(CGI.escape(id))
+          ontology.explore.class(URI.escape(id))
         end
 
         def self.search(*args)

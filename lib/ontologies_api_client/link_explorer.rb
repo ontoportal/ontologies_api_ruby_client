@@ -1,4 +1,4 @@
-require 'cgi'
+require 'uri'
 require_relative 'http'
 
 module LinkedData
@@ -61,7 +61,7 @@ module LinkedData
         values = values.dup
         values = [values] unless values.is_a?(Array)
         return url.gsub(/(\{.*?\})/) do
-          CGI.escape(values.shift)
+          URI.escape(values.shift)
         end
       end
 

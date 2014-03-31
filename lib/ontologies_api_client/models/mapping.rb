@@ -1,4 +1,4 @@
-require "cgi"
+require "uri"
 require_relative "../base"
 
 module LinkedData
@@ -11,11 +11,11 @@ module LinkedData
         @media_type = "http://data.bioontology.org/metadata/Mapping"
 
         def self.find(id, params = {})
-          HTTP.get(mappings_url_prefix + CGI.escape(id), params)
+          HTTP.get(mappings_url_prefix + URI.escape(id), params)
         end
 
         def delete
-          HTTP.delete(mappings_url_prefix + CGI.escape(self.id))
+          HTTP.delete(mappings_url_prefix + URI.escape(self.id))
         end
 
         private
