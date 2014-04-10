@@ -45,6 +45,12 @@ module LinkedData
           return administeredBy.any? {|u| u == user.id}
         end
 
+        def invalidate_cache
+          self.class.all(invalidate_cache: true)
+          self.class.all(invalidate_cache: true, include_views: true)
+          HTTP.get(self.id, invalidate_cache: true) if self.id
+        end
+
         # For use with select lists, always includes the admin by default
         def acl_select
           select_opts = []
