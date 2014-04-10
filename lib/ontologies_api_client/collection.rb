@@ -57,6 +57,13 @@ module LinkedData
         end
 
         ##
+        # Get all resources from the base collection for a resource as a hash with resource ids as the keys
+        def all_to_hash(*args)
+          all = all(*args)
+          Hash[all.map {|e| [e.id, e]}]
+        end
+
+        ##
         # Find certain resources from the collection by passing a block that filters results
         def where(params = {}, &block)
           if block_given?
