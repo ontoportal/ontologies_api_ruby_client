@@ -8,12 +8,15 @@
 
 Configuration is provided by calling the <code>config</code> method
 
-    LinkedData::Client.config do |config|
-      config.rest_url   = "http://stagedata.bioontology.org"
-      config.apikey     = "your_apikey"
-      config.links_attr = "links"
-      config.cache      = false
-    end
+```ruby
+require 'ontologies_api_client'
+LinkedData::Client.config do |config|
+  config.rest_url   = "http://stagedata.bioontology.org"
+  config.apikey     = "your_apikey"
+  config.links_attr = "links"
+  config.cache      = false
+end
+```
 
 ## Usage
 
@@ -28,36 +31,82 @@ There are multiple ways to retrieve individual or groups of resources.
 
 To retrieve a single record by id:
 
-    Category.find("http://data.bioontology.org/categories/all_organisms")
+```ruby
+Category.find("http://data.bioontology.org/categories/all_organisms")
+```
 
 ***Where***
 
 To retrieve all records that match a particular an in-code filter. The code is a block that should return a
 boolean that indicates whether or not the item should be included in the results.
 
-    categories = Category.where do |ont|
-      ont.name.include?("health")
-    end
+```ruby
+categories = Category.where do |ont|
+  ont.name.include?("health")
+end
+```
 
 ***Find By***
 
 You can use shortcut methods to find by particular attribute/value pairs
 (attributes are named in the method and multiple can be provided by connecting them with 'and').
 
-    categories = Category.find_by_parentCategory("http://data.bioontology.org/categories/anatomy")
+```ruby
+categories = Category.find_by_parentCategory("http://data.bioontology.org/categories/anatomy")
+```
+
+## Create / Update / Delete
+
+Creates are done via HTTP POST, update via HTTP PATCH, and deletes using HTTP DELETE.
+
+### Create
+
+```ruby
+ontology_values = {
+  acronym: "MY_ONT",
+  name: "My Ontology",
+  administeredBy: [http://data.bioontology.org/users/my_user]
+}
+ontology = LinkedData::Client::Models::Ontology.new(values: ontology_values)
+response = ontology.save
+puts ontology_saved.errors
+```
+
+### Update
+
+```ruby
+new_values = {
+  administeredBy: [http://data.bioontology.org/users/my_other_user]
+}
+ontology = LinkedData::Client::Models::Ontology.find_by_acronym("MY_ONT")
+ontology.update_from_params(params[:ontology])
+response = ontology.update
+puts response.errors
+```
+
+### Delete
+
+```ruby
+ontology = LinkedData::Client::Models::Ontology.find_by_acronym("MY_ONT")
+response = ontology.delete
+```
 
 ## Hypermedia Navigation
 
 All resources have a collection of hypermedia links, available by calling the 'links' method.
 These links can be navigated by calling the 'explore' method and chaining the link:
 
-    ontology = Category.find("http://data.bioontology.org/categories/all_organisms")
-    classes = ontology.explore.classes
+```ruby
+ontology = Category.find("http://data.bioontology.org/categories/all_organisms")
+classes = ontology.explore.classes
+```
 
 Links may contain a [URI template](http://tools.ietf.org/html/rfc6570). In this case, the template can be
 populated by passing in ordered values for the template tokens:
 
-    cls = ontology.explore.single_class("http://my.class.id/class1")
+```ruby
+cls = ontology.explore.single_class("http://my.class.id/class1")
+```
 
 ## Defining Resources
 
@@ -67,10 +116,12 @@ providing attribute names that we want to retreive for each media type.
 
 For example:
 
-    class Category < LinkedData::Client::Base
-      include LinkedData::Client::Collection
-      @media_type = "http://data.bioontology.org/metadata/Category"
-    end
+```ruby
+class Category < LinkedData::Client::Base
+  include LinkedData::Client::Collection
+  @media_type = "http://data.bioontology.org/metadata/Category"
+end
+```
 
 ### Collections
 
@@ -89,13 +140,13 @@ For questions please email [support@bioontology.org](support@bioontology.org.)
 
 ## License
 
-Copyright (c) 2013, The Board of Trustees of Leland Stanford Junior University All rights reserved.
+Copyright (c) 2014, The Board of Trustees of Leland Stanford Junior University All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
-    Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
 
-    Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
 
 THIS SOFTWARE IS PROVIDED BY THE BOARD OF TRUSTEES OF LELAND STANFORD JUNIOR UNIVERSITY ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL The Board of Trustees of Leland Stanford Junior University OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
