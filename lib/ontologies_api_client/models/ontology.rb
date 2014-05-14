@@ -24,7 +24,7 @@ module LinkedData
         end
 
         def viewing_restricted?
-          private? && licensed?
+          private? || licensed?
         end
 
         def view?
@@ -39,6 +39,13 @@ module LinkedData
           end
         end
 
+        def access?(user)
+          return true if !viewing_restricted?
+          return false if user.nil?
+          return true if user.admin?
+          return self.full_acl.any? {|u| u == user.id}
+        end
+
         def admin?(user)
           return false if user.nil?
           return true if user.admin?
@@ -51,22 +58,18 @@ module LinkedData
           HTTP.get(self.id, invalidate_cache: true) if self.id
         end
 
+        # ACL with administrators
+        def full_acl
+          ((self.acl || []) + self.administeredBy).uniq
+        end
+
         # For use with select lists, always includes the admin by default
         def acl_select
           select_opts = []
-          return select_opts if self.acl.nil? or self.acl.empty?
-
-          if self.acl.nil? || self.acl.empty?
-            self.administeredBy.each do |userId|
-              select_opts << [User.get(userId).username, userId]
-            end
-          else
-            self.acl.each do |userId|
-              select_opts << [User.get(userId).username, userId]
-            end
+          self.full_acl.each do |userId|
+            select_opts << [User.get(userId).username, userId]
           end
-
-          (select_opts + self.administeredBy).uniq
+          select_opts
         end
 
         ##
