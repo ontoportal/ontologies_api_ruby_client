@@ -40,7 +40,7 @@ module LinkedData
         def purl
           return "" if self.links.nil?
           ont = self.explore.ontology
-          "#{LinkedData::Client.settings.purl_prefix}/#{ont.acronym}/#{URI.escape(self.id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}"
+          "#{LinkedData::Client.settings.purl_prefix}/#{ont.acronym}?conceptid=#{URI.escape(self.id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}"
         end
 
         def self.find(id, ontology, params = {})
