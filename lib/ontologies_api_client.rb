@@ -7,6 +7,7 @@ require_relative 'ontologies_api_client/link_explorer'
 require_relative 'ontologies_api_client/base'
 require_relative 'ontologies_api_client/collection'
 require_relative 'ontologies_api_client/read_write'
+require_relative 'ontologies_api_client/resource_index/resource_index'
 
 # Models
 curr_dir = File.expand_path("../ontologies_api_client",  __FILE__)
