@@ -6,15 +6,22 @@ module LinkedData::Client
       get(:resources)
     end
 
-    def self.counts(classes)
+    def self.counts(classes, params = {})
       classes = classes.is_a?(Array) ? classes : [classes]
-      get(:counts, class_params_hash(classes))
+      params.merge!(class_params_hash(classes))
+      get(:counts, params)
     end
 
     def self.documents(resource_id, classes, params = {})
       classes = classes.is_a?(Array) ? classes : [classes]
       params.merge!(class_params_hash(classes))
       get("resources/#{resource_id}/search", params)
+    end
+
+    def self.documents_all_resources(classes, params = {})
+      classes = classes.is_a?(Array) ? classes : [classes]
+      params.merge!(class_params_hash(classes))
+      get("resources/search", params)
     end
 
     def self.class_params_hash(classes, escape = false)
