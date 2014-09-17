@@ -99,6 +99,12 @@ module LinkedData
           super(id, params)
         end
 
+        ##
+        # Include parameters commonly used with ontologies
+        def self.include_params
+          "acronym,administeredBy,group,hasDomain,name,notes,projects,reviews,summaryOnly,viewingRestriction"
+        end
+
       end
     end
   end
