@@ -19,6 +19,17 @@ module LinkedData
         def admin?
           respond_to?(:role) && role.include?("ADMINISTRATOR")
         end
+
+        def invalidate_cache
+          super
+          ## IMPORTANT
+          # We have to invalidate ontologies here because the user could be setting
+          # custom ontologies. If we don't do this both on the REST and here then
+          # the UI cache will not update.
+          Ontology.all(invalidate_cache: true)
+          Ontology.all(invalidate_cache: true, include: LinkedData::Client::Models::Ontology.include_params)
+        end
+
       end
     end
   end
