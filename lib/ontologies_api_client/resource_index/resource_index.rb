@@ -12,6 +12,10 @@ module LinkedData::Client
       get(:counts, params)
     end
 
+    def self.annotation_counts()
+      get("annotation_counts")
+    end
+
     def self.documents(resource_id, classes, params = {})
       classes = classes.is_a?(Array) ? classes : [classes]
       params.merge!(class_params_hash(classes))
