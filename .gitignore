@@ -1,3 +1,5 @@
 .idea/
 config/config.rb
 *.gem
+
+.DS_Store
