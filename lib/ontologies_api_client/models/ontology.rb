@@ -73,6 +73,21 @@ module LinkedData
         end
 
         ##
+        # Method to get the property tree for a given ontology
+        # Gets the properties from the REST API and then returns a tree
+        def property_tree
+          properties = Hash[self.explore.properties.map {|p| [p.id, p]}]
+          properties.keys.each do |key|
+            prop = properties[key]
+            prop.parents.each {|par| properties[par].children << prop if properties[par]}
+          end
+          roots = properties.values.select {|p| p.parents.empty? rescue binding.pry}
+          root = LinkedData::Client::Models::Property.new
+          root.children = roots
+          root
+        end
+
+        ##
         # Find a resource by a combination of attributes
         # Override to search for views as well by default
         # Views get hidden on the REST service unless the `include_views`
