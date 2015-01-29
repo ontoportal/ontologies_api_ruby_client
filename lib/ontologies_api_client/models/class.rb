@@ -43,6 +43,10 @@ module LinkedData
           "#{LinkedData::Client.settings.purl_prefix}/#{ont.acronym}?conceptid=#{URI.escape(self.id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}"
         end
 
+        def ontology
+          self.explore.ontology
+        end
+
         def self.find(id, ontology, params = {})
           ontology = HTTP.get(ontology, params)
           ontology.explore.class(URI.escape(id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]")))
