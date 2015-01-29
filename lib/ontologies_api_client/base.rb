@@ -20,12 +20,22 @@ module LinkedData
       end
 
       def self.class_for_type(media_type)
-        classes = LinkedData::Client::Models.constants
-        classes.each do |cls|
-          media_type_cls = LinkedData::Client::Models.const_get(cls)
-          return media_type_cls if media_type_cls.media_type.eql?(media_type)
+        return @media_type_class_map[media_type] if @media_type_class_map
+        @media_type_class_map = {}
+        map_classes(@media_type_class_map)
+        return @media_type_class_map[media_type]
+      end
+
+      def self.map_classes(map, constants = nil, level = 0)
+        return if level > 10
+        classes = constants || LinkedData::Client::Models.constants.map {|c| LinkedData::Client::Models.const_get(c)}
+        classes.each do |media_type_cls|
+          next if map[media_type_cls] || !media_type_cls.respond_to?(:media_type) || !media_type_cls.ancestors.include?(LinkedData::Client::Base)
+          map[media_type_cls.media_type] = media_type_cls
+          sub_classes = media_type_cls.constants.map {|c| media_type_cls.const_get(c)}
+          level += 1
+          map_classes(map, sub_classes, level) if sub_classes.length > 0
         end
-        nil
       end
 
       def initialize(options = {})
