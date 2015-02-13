@@ -79,7 +79,10 @@ module LinkedData
           properties = Hash[self.explore.properties.map {|p| [p.id, p]}]
           properties.keys.each do |key|
             prop = properties[key]
-            prop.parents.each {|par| properties[par].children << prop if properties[par]}
+            prop.parents.each do |par|
+              next if properties[par].nil? || properties[par].children.nil?
+              properties[par].children << prop
+            end
           end
           roots = properties.values.select {|p| p.parents.empty?}
           root = LinkedData::Client::Models::Property.new
