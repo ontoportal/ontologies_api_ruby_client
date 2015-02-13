@@ -6,7 +6,7 @@ module LinkedData
       attr_accessor :context, :links
 
       class << self
-        attr_accessor :media_type, :include_attrs, :include_attrs_full, :attrs_always_present
+        attr_accessor :media_type, :act_as_media_type, :include_attrs, :include_attrs_full, :attrs_always_present
       end
 
       ##
@@ -25,16 +25,13 @@ module LinkedData
         return @media_type_class_map[media_type]
       end
 
-      def self.map_classes(constants = nil, level = 0)
-        return {} if level > 10
+      def self.map_classes
         map = {}
-        classes = constants || LinkedData::Client::Models.constants.map {|c| LinkedData::Client::Models.const_get(c)}
+        classes = LinkedData::Client::Models.constants.map {|c| LinkedData::Client::Models.const_get(c)}
         classes.each do |media_type_cls|
           next if map[media_type_cls] || !media_type_cls.respond_to?(:media_type) || !media_type_cls.ancestors.include?(LinkedData::Client::Base)
           map[media_type_cls.media_type] = media_type_cls
-          sub_classes = media_type_cls.constants.map {|c| media_type_cls.const_get(c)}
-          level += 1
-          map.merge!(map_classes(sub_classes, level)) if sub_classes.length > 0
+          media_type_cls.act_as_media_type.each {|mt| map[mt] = media_type_cls} if media_type_cls.act_as_media_type
         end
         return map
       end

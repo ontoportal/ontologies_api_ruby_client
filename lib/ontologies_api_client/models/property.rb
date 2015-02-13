@@ -5,6 +5,7 @@ module LinkedData
     module Models
       class Property < LinkedData::Client::Base
         @media_type = "http://data.bioontology.org/metadata/Property"
+        @act_as_media_type = ["http://www.w3.org/2002/07/owl#DatatypeProperty", "http://www.w3.org/2002/07/owl#ObjectProperty", "http://www.w3.org/2002/07/owl#AnnotationProperty"]
         @include_attrs = "all"
 
         attr_accessor :prefLabel, :children
@@ -54,21 +55,6 @@ module LinkedData
           # hack to get ontology, split the submission URI and trust the path hasn't changed
           acronym = @submission.split("/")[4]
           LinkedData::Client::Models::Ontology.find_by_acronym(acronym).first
-        end
-
-        class DatatypeProperty < Property
-          @media_type = "http://www.w3.org/2002/07/owl#DatatypeProperty"
-          @include_attrs = "all"
-        end
-
-        class ObjectProperty < Property
-          @media_type = "http://www.w3.org/2002/07/owl#ObjectProperty"
-          @include_attrs = "all"
-        end
-
-        class AnnotationProperty < Property
-          @media_type = "http://www.w3.org/2002/07/owl#AnnotationProperty"
-          @include_attrs = "all"
         end
 
       end
