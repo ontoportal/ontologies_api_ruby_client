@@ -88,7 +88,7 @@ module LinkedData
             end
           end
           puts "\n\n\n\n\n\n\n\n\n\n\n PROPERTIES !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-          roots = properties.values.select {|p| p.parents.empty?}
+          roots = properties.values.select {|p| p.parents.empty?}.compact
           root = LinkedData::Client::Models::Property.new
           root.children = roots
           root
