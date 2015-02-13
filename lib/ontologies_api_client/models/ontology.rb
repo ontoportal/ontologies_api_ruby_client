@@ -81,7 +81,7 @@ module LinkedData
             prop = properties[key]
             prop.parents.each {|par| properties[par].children << prop if properties[par]}
           end
-          roots = properties.values.select {|p| p.parents.empty? rescue binding.pry}
+          roots = properties.values.select {|p| p.parents.empty?}
           root = LinkedData::Client::Models::Property.new
           root.children = roots
           root
