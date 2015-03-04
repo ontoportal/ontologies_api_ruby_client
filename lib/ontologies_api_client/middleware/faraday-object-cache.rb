@@ -3,6 +3,8 @@ require 'active_support/cache'
 require 'lz4-ruby'
 require_relative '../http'
 
+$CACHE_DEBUG = false
+
 module Faraday
   class ObjectCacheResponse < Faraday::Response
     attr_accessor :parsed_body
