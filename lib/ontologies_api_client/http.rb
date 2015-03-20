@@ -102,14 +102,18 @@ module LinkedData
         return responses
       end
 
-      def self.post(path, obj)
+      def self.post(path, obj, options = {})
         file, file_attribute = params_file_handler(obj)
         response = conn.post do |req|
           req.url path
           custom_req(obj, file, file_attribute, req)
         end
         raise Exception, response.body if response.status >= 500
-        recursive_struct(load_json(response.body))
+        if options[:raw] || false # return the unparsed body of the request
+          return response.body
+        else
+          return recursive_struct(load_json(response.body))
+        end
       end
 
       def self.put(path, obj)
