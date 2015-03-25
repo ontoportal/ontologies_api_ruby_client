@@ -172,7 +172,7 @@ module LinkedData
         return if params.nil?
         file, return_attribute = nil, nil
         params.dup.each do |attribute, value|
-          next unless value.is_a?(File) || value.is_a?(Tempfile)
+          next unless value.is_a?(File) || value.is_a?(Tempfile) || value.is_a?(ActionDispatch::Http::UploadedFile)
           filename = value.original_filename
           file = Faraday::UploadIO.new(value.path, "text/plain", filename)
           return_attribute = attribute
