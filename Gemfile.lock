@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     ontologies_api_client (0.0.6)
-      activesupport (<= 3.0)
+      activesupport (< 3.0)
       excon
       faraday
       lz4-ruby
@@ -12,22 +12,22 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (3.0.0)
+    activesupport (2.3.18)
     coderay (1.1.0)
-    excon (0.43.0)
+    excon (0.45.1)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
     lz4-ruby (0.3.3)
     method_source (0.8.2)
-    multi_json (1.10.1)
+    multi_json (1.11.0)
     multipart-post (2.0.0)
-    oj (2.11.4)
-    pry (0.9.12.3)
-      coderay (~> 1.0)
-      method_source (~> 0.8)
+    oj (2.12.1)
+    pry (0.10.1)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
       slop (~> 3.4)
-    rake (10.1.0)
-    slop (3.4.7)
+    rake (10.4.2)
+    slop (3.6.0)
 
 PLATFORMS
   ruby
