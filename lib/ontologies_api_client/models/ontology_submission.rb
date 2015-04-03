@@ -8,6 +8,13 @@ module LinkedData
         include LinkedData::Client::ReadWrite
         @media_type = "http://data.bioontology.org/metadata/OntologySubmission"
         @include_attrs = "all"
+
+        PRETTY_FORMATS = {
+          "UMLS" => "RDF/TTL"
+        }
+        def pretty_format
+          PRETTY_FORMATS[self.hasOntologyLanguage] || self.hasOntologyLanguage
+        end
       end
     end
   end

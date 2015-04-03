@@ -102,14 +102,18 @@ module LinkedData
         return responses
       end
 
-      def self.post(path, obj)
+      def self.post(path, obj, options = {})
         file, file_attribute = params_file_handler(obj)
         response = conn.post do |req|
           req.url path
           custom_req(obj, file, file_attribute, req)
         end
         raise Exception, response.body if response.status >= 500
-        recursive_struct(load_json(response.body))
+        if options[:raw] || false # return the unparsed body of the request
+          return response.body
+        else
+          return recursive_struct(load_json(response.body))
+        end
       end
 
       def self.put(path, obj)
@@ -168,7 +172,7 @@ module LinkedData
         return if params.nil?
         file, return_attribute = nil, nil
         params.dup.each do |attribute, value|
-          next unless value.is_a?(File) || value.is_a?(Tempfile)
+          next unless value.is_a?(File) || value.is_a?(Tempfile) || value.is_a?(ActionDispatch::Http::UploadedFile)
           filename = value.original_filename
           file = Faraday::UploadIO.new(value.path, "text/plain", filename)
           return_attribute = attribute
