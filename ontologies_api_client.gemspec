@@ -17,7 +17,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency('faraday')
   gem.add_dependency('excon')
   gem.add_dependency('lz4-ruby')
-  gem.add_dependency('activesupport', '~> 3.0')
+  gem.add_dependency('activesupport', '~> 4.2.1')
 
   # gem.executables = %w()
 end
