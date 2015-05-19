@@ -53,9 +53,8 @@ module LinkedData
         end
 
         def invalidate_cache
-          self.class.all(invalidate_cache: true)
           self.class.all(invalidate_cache: true, include_views: true)
-          HTTP.get(self.id, invalidate_cache: true) if self.id
+          super
         end
 
         # ACL with administrators
