@@ -48,6 +48,9 @@ module LinkedData
         require_relative 'middleware/faraday-slices'
         faraday.use :ncbo_slices
 
+        require_relative 'middleware/faraday-last-updated'
+        faraday.use :last_updated
+
         if @settings.cache
           begin
             require_relative 'middleware/faraday-object-cache'
