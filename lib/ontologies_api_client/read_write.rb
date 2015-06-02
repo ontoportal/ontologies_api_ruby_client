@@ -83,6 +83,18 @@ module LinkedData
       def invalidate_cache
         self.class.all(invalidate_cache: true)
         HTTP.get(self.id, invalidate_cache: true) if self.id
+        session = Thread.current[:session]
+        session[:last_updated] = Time.now.to_f if session
+        refresh_cache
+      end
+
+      def refresh_cache
+        Spawnling.new do
+          LinkedData::Client::Models::Ontology.all
+          LinkedData::Client::Models::OntologySubmission.all
+          LinkedData::Client::Models::User.all
+          exit
+        end
       end
 
     end

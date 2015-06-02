@@ -48,13 +48,15 @@ module LinkedData
         require_relative 'middleware/faraday-slices'
         faraday.use :ncbo_slices
 
+        require_relative 'middleware/faraday-last-updated'
+        faraday.use :last_updated
+
         if @settings.cache
           begin
             require_relative 'middleware/faraday-object-cache'
             faraday.use :object_cache, store: store
             puts "=> faraday caching enabled"
-            puts "=> faraday cache store:"
-            pp store
+            puts "=> faraday cache store: #{store.class}"
           rescue LoadError
             puts "=> WARNING: faraday http cache gem is not available, caching disabled"
           end

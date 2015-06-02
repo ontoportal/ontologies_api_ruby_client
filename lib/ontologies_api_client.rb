@@ -1,5 +1,6 @@
 require 'oj'
 require 'multi_json'
+require 'spawnling'
 
 require_relative 'ontologies_api_client/config'
 require_relative 'ontologies_api_client/http'

@@ -8,6 +8,7 @@ PATH
       lz4-ruby
       multi_json
       oj
+      spawnling
 
 GEM
   remote: https://rubygems.org/
@@ -23,19 +24,20 @@ GEM
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
     i18n (0.7.0)
-    json (1.8.2)
+    json (1.8.3)
     lz4-ruby (0.3.3)
     method_source (0.8.2)
-    minitest (5.6.1)
+    minitest (5.7.0)
     multi_json (1.11.0)
     multipart-post (2.0.0)
-    oj (2.12.6)
+    oj (2.12.9)
     pry (0.10.1)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
     rake (10.4.2)
     slop (3.6.0)
+    spawnling (2.1.6)
     thread_safe (0.3.5)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
