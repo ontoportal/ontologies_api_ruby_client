@@ -31,7 +31,13 @@ module LinkedData
         end
 
         # TODO: Implement properly
-        def relation_icon; ""; end
+        def relation_icon(parent)
+          return "" unless self.explore.ontology.explore.latest_submission.hasOntologyLanguage.eql?("OBO")
+          non_subclassOf_parent_rel = !self.subClassOf ||
+              (self.subClassOf && (self.subClassOf.include?("http://www.w3.org/2002/07/owl#Thing") || self.subClassOf.include?(parent.id)))
+          return "" if non_subclassOf_parent_rel
+          " <span class='ui-icon ui-icon-info' style='display: inline-block !important; vertical-align: -4px; cursor: help;' title='The parent of this class is not defined with a subClassOf relationship'></span>"
+        end
 
         def to_jsonld
           HTTP.get(self.links["self"], {}, {raw: true})
