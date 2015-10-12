@@ -32,6 +32,7 @@ module LinkedData
 
         # TODO: Implement properly
         def relation_icon(parent)
+          return "" if self.explore.ontology.explore.latest_submission.nil?
           return "" unless self.explore.ontology.explore.latest_submission.hasOntologyLanguage.eql?("OBO")
           non_subclassOf_parent_rel = !self.subClassOf ||
               (self.subClassOf && (self.subClassOf.include?("http://www.w3.org/2002/07/owl#Thing") || self.subClassOf.include?(parent.id)))
