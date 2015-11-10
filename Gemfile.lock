@@ -27,7 +27,7 @@ GEM
     json (1.8.3)
     lz4-ruby (0.3.3)
     method_source (0.8.2)
-    minitest (5.8.1)
+    minitest (5.8.2)
     multi_json (1.11.2)
     multipart-post (2.0.0)
     oj (2.13.0)
