@@ -13,22 +13,22 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (4.2.8)
+    activesupport (4.2.9)
       i18n (~> 0.7)
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     coderay (1.1.1)
-    excon (0.55.0)
-    faraday (0.12.1)
+    excon (0.58.0)
+    faraday (0.13.1)
       multipart-post (>= 1.2, < 3)
-    i18n (0.8.1)
+    i18n (0.8.6)
     lz4-ruby (0.3.3)
     method_source (0.8.2)
-    minitest (5.10.2)
+    minitest (5.10.3)
     multi_json (1.12.1)
     multipart-post (2.0.0)
-    oj (3.0.9)
+    oj (3.3.5)
     pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -42,6 +42,7 @@ GEM
 
 PLATFORMS
   ruby
+  x86_64-darwin-16
 
 DEPENDENCIES
   ontologies_api_client!
@@ -49,4 +50,4 @@ DEPENDENCIES
   rake
 
 BUNDLED WITH
-   1.13.7
+   1.15.3
