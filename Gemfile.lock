@@ -37,7 +37,7 @@ GEM
     rake (12.3.0)
     spawnling (2.1.6)
     thread_safe (0.3.6)
-    tzinfo (1.2.4)
+    tzinfo (1.2.5)
       thread_safe (~> 0.1)
 
 PLATFORMS
@@ -50,4 +50,4 @@ DEPENDENCIES
   rake
 
 BUNDLED WITH
-   1.15.4
+   1.16.0
