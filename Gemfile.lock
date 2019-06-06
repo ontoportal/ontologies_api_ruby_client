@@ -2,28 +2,28 @@ PATH
   remote: .
   specs:
     ontologies_api_client (0.0.6)
-      activesupport (~> 4.2.1)
+      activesupport (~> 5.0.7.2)
       excon
       faraday
       lz4-ruby
       multi_json
       oj
-      spawnling
+      spawnling (= 2.1.5)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (4.2.11.1)
-      i18n (~> 0.7)
+    activesupport (5.0.7.2)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 0.7, < 2)
       minitest (~> 5.1)
-      thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     coderay (1.1.2)
     concurrent-ruby (1.1.5)
     excon (0.64.0)
     faraday (0.15.4)
       multipart-post (>= 1.2, < 3)
-    i18n (0.9.5)
+    i18n (1.6.0)
       concurrent-ruby (~> 1.0)
     lz4-ruby (0.3.3)
     method_source (0.9.2)
@@ -31,11 +31,14 @@ GEM
     multi_json (1.13.1)
     multipart-post (2.1.1)
     oj (3.7.12)
+    power_assert (1.1.4)
     pry (0.12.2)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
     rake (12.3.2)
-    spawnling (2.1.6)
+    spawnling (2.1.5)
+    test-unit (3.3.3)
+      power_assert
     thread_safe (0.3.6)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
@@ -49,6 +52,7 @@ DEPENDENCIES
   ontologies_api_client!
   pry
   rake
+  test-unit
 
 BUNDLED WITH
    1.17.3

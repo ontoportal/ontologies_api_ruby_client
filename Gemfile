@@ -4,3 +4,4 @@ gemspec
 
 gem 'rake'
 gem 'pry'
+gem 'test-unit'
