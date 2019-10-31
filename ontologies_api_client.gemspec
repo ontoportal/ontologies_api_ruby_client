@@ -1,6 +1,6 @@
 Gem::Specification.new do |gem|
   gem.authors       = ["Paul R Alexander"]
-  gem.email         = ["palexander@stanford.edu"]
+  gem.email         = ["support@bioontology.org"]
   gem.description   = %q{Models and serializers for ontologies and related artifacts backed by 4store}
   gem.summary       = %q{This library can be used for interacting with a 4store instance that stores NCBO-based ontology information. Models in the library are based on Goo. Serializers support RDF serialization as Rack Middleware and automatic generation of hypermedia links.}
   gem.homepage      = "https://github.com/ncbo/ontologies_api_ruby_client"
