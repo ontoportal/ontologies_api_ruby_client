@@ -10,7 +10,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.name          = "ontologies_api_client"
   gem.require_paths = ["lib"]
-  gem.version       = "0.0.6"
+  gem.version       = "1.0.0"
 
   gem.add_dependency('multi_json')
   gem.add_dependency('oj')

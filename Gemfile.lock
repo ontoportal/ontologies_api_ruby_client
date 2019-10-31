@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ontologies_api_client (0.0.6)
+    ontologies_api_client (1.0.0)
       activesupport (~> 5.1.7)
       excon
       faraday
