@@ -1,6 +1,6 @@
 Gem::Specification.new do |gem|
   gem.authors       = ["Paul R Alexander"]
-  gem.email         = ["palexander@stanford.edu"]
+  gem.email         = ["support@bioontology.org"]
   gem.description   = %q{Models and serializers for ontologies and related artifacts backed by 4store}
   gem.summary       = %q{This library can be used for interacting with a 4store instance that stores NCBO-based ontology information. Models in the library are based on Goo. Serializers support RDF serialization as Rack Middleware and automatic generation of hypermedia links.}
   gem.homepage      = "https://github.com/ncbo/ontologies_api_ruby_client"
@@ -10,15 +10,15 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.name          = "ontologies_api_client"
   gem.require_paths = ["lib"]
-  gem.version       = "0.0.6"
+  gem.version       = "1.0.0"
 
   gem.add_dependency('multi_json')
   gem.add_dependency('oj')
   gem.add_dependency('faraday')
   gem.add_dependency('excon')
   gem.add_dependency('lz4-ruby')
-  gem.add_dependency('spawnling')
-  gem.add_dependency('activesupport', '~> 4.2.1')
+  gem.add_dependency('spawnling', '2.1.5')
+  gem.add_dependency('activesupport', '~> 5.1.7')
 
   # gem.executables = %w()
 end
