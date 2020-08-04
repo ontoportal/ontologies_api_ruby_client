@@ -20,7 +20,9 @@ module LinkedData
       end
 
       def self.class_for_type(media_type)
-        return @media_type_class_map[media_type] if @media_type_class_map
+        if defined? @media_type_class_map
+          return @media_type_class_map[media_type]
+        end
         @media_type_class_map = map_classes
         return @media_type_class_map[media_type]
       end
@@ -37,7 +39,6 @@ module LinkedData
       end
 
       def initialize(options = {})
-        read_only = options.delete(:read_only) || false
         values = options[:values]
         if values.is_a?(Hash) && !values.empty?
           create_attributes(values.keys)

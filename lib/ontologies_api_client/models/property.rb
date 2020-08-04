@@ -8,8 +8,6 @@ module LinkedData
         @act_as_media_type = ["http://www.w3.org/2002/07/owl#DatatypeProperty", "http://www.w3.org/2002/07/owl#ObjectProperty", "http://www.w3.org/2002/07/owl#AnnotationProperty"]
         @include_attrs = "all"
 
-        attr_accessor :prefLabel, :children
-
         def self.properties_to_hash(ary)
           ary = ary.is_a?(Array) ? ary : [ary]
           ary.map {|p| p.to_hash}
