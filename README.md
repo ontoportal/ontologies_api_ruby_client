@@ -140,7 +140,7 @@ For questions please email [support@bioontology.org](support@bioontology.org.)
 
 ## License
 
-Copyright (c) 2014, The Board of Trustees of Leland Stanford Junior University All rights reserved.
+Copyright (c) 2020, The Board of Trustees of Leland Stanford Junior University All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
