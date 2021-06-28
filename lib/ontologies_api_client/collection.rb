@@ -69,7 +69,7 @@ module LinkedData
           if block_given?
             return all(params).select {|e| block.call(e)}
           else
-            raise ArgumentException("Must provide a block to find items")
+            raise ArgumentError("Must provide a block to find items")
           end
         end
 

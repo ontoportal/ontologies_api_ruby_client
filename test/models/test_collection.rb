@@ -26,10 +26,10 @@ class CollectionTest < LinkedData::Client::TestCase
     assert bro.length >= 1
     assert bro.any? {|o| o.acronym.eql?("BRO")}
 
-    onts = TestOntology.find_by_hasDomain_and_doNotUpdate("http://data.bioontology.org/categories/Health", true)
+    onts = TestOntology.find_by_hasDomain_and_doNotUpdate("https://data.bioontology.org/categories/Health", true)
     assert onts.length >= 1
 
-    onts = TestOntology.find_by_hasDomain_and_hasDomain("http://data.bioontology.org/categories/Phenotype", "http://data.bioontology.org/categories/Human")
+    onts = TestOntology.find_by_hasDomain_and_hasDomain("https://data.bioontology.org/categories/Phenotype", "https://data.bioontology.org/categories/Human")
     assert onts.length >= 1
   end
 
@@ -39,7 +39,7 @@ class CollectionTest < LinkedData::Client::TestCase
   end
 
   def test_find
-    ont = TestOntology.find("http://data.bioontology.org/ontologies/SNOMEDCT")
+    ont = TestOntology.find("https://data.bioontology.org/ontologies/SNOMEDCT")
     assert !ont.nil?
   end
 end
