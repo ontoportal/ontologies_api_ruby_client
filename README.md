@@ -9,7 +9,7 @@ Rack Middleware and automatic generation of hypermedia links.
 ## Install
 
 ```
-gem install ontologies_api_client`
+gem install ontologies_api_client
 ```
 
 ## Configuration
