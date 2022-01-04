@@ -12,13 +12,13 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = "2.0.2"
 
+  gem.add_dependency('activesupport', '~> 5.2.6')
+  gem.add_dependency('excon')
+  gem.add_dependency('faraday', '1.4.3')
+  gem.add_dependency('lz4-ruby')
   gem.add_dependency('multi_json')
   gem.add_dependency('oj')
-  gem.add_dependency('faraday')
-  gem.add_dependency('excon')
-  gem.add_dependency('lz4-ruby')
   gem.add_dependency('spawnling', '2.1.5')
-  gem.add_dependency('activesupport', '~> 5.2.6')
 
   # gem.executables = %w()
 end
