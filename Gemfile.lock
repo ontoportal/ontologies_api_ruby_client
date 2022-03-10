@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     ontologies_api_client (2.0.3)
-      activesupport (~> 6.0.4)
+      activesupport (= 6.0.4.1)
       excon
       faraday
       lz4-ruby
