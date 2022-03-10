@@ -1,5 +1,6 @@
 require 'ostruct'
 require 'faraday'
+require 'faraday/multipart'
 require 'excon'
 require 'logger'
 
