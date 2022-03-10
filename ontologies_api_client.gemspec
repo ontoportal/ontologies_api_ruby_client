@@ -15,7 +15,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency('activesupport', '6.0.4.1')
   gem.add_dependency('excon')
   gem.add_dependency('faraday')
-  gem.add_dependency('faraday-excon')
+  gem.add_dependency('faraday-excon', '~> 2.0.0')
   gem.add_dependency('faraday-multipart')
   gem.add_dependency('lz4-ruby')
   gem.add_dependency('multi_json')
