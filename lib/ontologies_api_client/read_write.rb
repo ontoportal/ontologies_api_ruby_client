@@ -5,9 +5,10 @@ module LinkedData
     module ReadWrite
       HTTP = LinkedData::Client::HTTP
 
-      def save
+      def save(options = {})
         resp = HTTP.post(self.class.collection_path, self.to_hash)
-        invalidate_cache()
+        # cache_refresh_all allow to avoid to refresh everything, to make it faster when saving new submission
+        invalidate_cache(options[:cache_refresh_all] == false)
         resp
       end
 
@@ -15,7 +16,9 @@ module LinkedData
         values = options[:values] || changed_values()
         return if values.empty?
         resp = HTTP.patch(self.id, values)
-        invalidate_cache()
+        # When updating submission we avoid refreshing all cache to avoid calling /submissions?display=all that takes a lot of time
+        invalidate_cache(options[:cache_refresh_all] == false)
+
         resp
       end
 
@@ -80,8 +83,8 @@ module LinkedData
         return current_value.eql?(new_value) rescue current_value == new_value
       end
 
-      def invalidate_cache
-        self.class.all(invalidate_cache: true)
+      def invalidate_cache(cache_refresh_all = true)
+        self.class.all(invalidate_cache: true) if cache_refresh_all
         HTTP.get(self.id, invalidate_cache: true) if self.id
         session = Thread.current[:session]
         session[:last_updated] = Time.now.to_f if session

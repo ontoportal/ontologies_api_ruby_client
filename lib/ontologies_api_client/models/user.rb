@@ -20,8 +20,8 @@ module LinkedData
           respond_to?(:role) && role.include?("ADMINISTRATOR")
         end
 
-        def invalidate_cache
-          super
+        def invalidate_cache(cache_refresh_all = true)
+          super(cache_refresh_all)
           ## IMPORTANT
           # We have to invalidate ontologies here because the user could be setting
           # custom ontologies. If we don't do this both on the REST and here then
