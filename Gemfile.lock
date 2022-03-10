@@ -5,6 +5,7 @@ PATH
       activesupport (= 6.0.4.1)
       excon
       faraday
+      faraday-excon
       faraday-multipart
       lz4-ruby
       multi_json
@@ -26,6 +27,7 @@ GEM
     faraday (2.2.0)
       faraday-net_http (~> 2.0)
       ruby2_keywords (>= 0.0.4)
+    faraday-excon (1.1.0)
     faraday-multipart (1.0.3)
       multipart-post (>= 1.2, < 3)
     faraday-net_http (2.0.1)
