@@ -21,7 +21,7 @@ module LinkedData
         end
 
         def invalidate_cache(cache_refresh_all = true)
-          super
+          super(cache_refresh_all)
           ## IMPORTANT
           # We have to invalidate ontologies here because the user could be setting
           # custom ontologies. If we don't do this both on the REST and here then
