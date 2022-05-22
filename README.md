@@ -1,8 +1,16 @@
-# NCBO Ontologies API Client
+# ontologies_api_client
+
+Models and serializers for ontologies and related artifacts backed by a [4store](https://github.com/4store/4store) 
+RDF database. This library can be used for interacting with a 4store instance that stores 
+[BioPortal](https://bioportal.bioontology.org/) ontology data. Models in the library are based on 
+[Graph Oriented Objects for Ruby (Goo)](https://github.com/ncbo/goo). Serializers support RDF serialization as 
+Rack Middleware and automatic generation of hypermedia links.
 
 ## Install
 
-    gem install ontologies_api_client
+```
+gem install ontologies_api_client
+```
 
 ## Configuration
 
@@ -20,8 +28,9 @@ end
 
 ## Usage
 
-Once configured, you can utilize the existing resources that are defined (see <code>lib/ontologies_api_client/models</code>)
-to access a resource, its information, and related resources.
+Once configured, you can utilize the existing resources that are defined 
+(see <code>lib/ontologies_api_client/models</code>) to access a resource, 
+its information, and related resources.
 
 ### Retrieval
 
@@ -29,7 +38,7 @@ There are multiple ways to retrieve individual or groups of resources.
 
 ***Find***
 
-To retrieve a single record by id:
+To retrieve a single record by ID:
 
 ```ruby
 Category.find("http://data.bioontology.org/categories/all_organisms")
@@ -37,8 +46,7 @@ Category.find("http://data.bioontology.org/categories/all_organisms")
 
 ***Where***
 
-To retrieve all records that match a particular an in-code filter. The code is a block that should return a
-boolean that indicates whether or not the item should be included in the results.
+To retrieve all records that match a particular in-code filter:
 
 ```ruby
 categories = Category.where do |ont|
@@ -46,14 +54,18 @@ categories = Category.where do |ont|
 end
 ```
 
+The code is a block that should return a boolean that indicates whether or not 
+the item should be included in the results.
+
 ***Find By***
 
-You can use shortcut methods to find by particular attribute/value pairs
-(attributes are named in the method and multiple can be provided by connecting them with 'and').
+Use shortcut methods to find by particular attribute/value pairs:
 
 ```ruby
 categories = Category.find_by_parentCategory("http://data.bioontology.org/categories/anatomy")
 ```
+
+Attributes are named in the method and multiple can be provided by connecting them with 'and'.
 
 ## Create / Update / Delete
 

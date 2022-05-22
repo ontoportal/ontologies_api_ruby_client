@@ -10,15 +10,15 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.name          = "ontologies_api_client"
   gem.require_paths = ["lib"]
-  gem.version       = "2.0.2"
+  gem.version       = "2.0.3"
 
+  gem.add_dependency('activesupport', '6.0.4.1')
+  gem.add_dependency('excon')
+  gem.add_dependency('faraday')
+  gem.add_dependency('faraday-excon', '~> 2.0.0')
+  gem.add_dependency('faraday-multipart')
+  gem.add_dependency('lz4-ruby')
   gem.add_dependency('multi_json')
   gem.add_dependency('oj')
-  gem.add_dependency('faraday')
-  gem.add_dependency('excon')
-  gem.add_dependency('lz4-ruby')
   gem.add_dependency('spawnling', '2.1.5')
-  gem.add_dependency('activesupport', '~> 5.2.6')
-
-  # gem.executables = %w()
 end
