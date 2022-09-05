@@ -83,7 +83,7 @@ module LinkedData
           else
             obj = recursive_struct(load_json(response.body))
           end
-        rescue Exception => e
+        rescue StandardError => e
           puts "Problem getting #{path}" if $DEBUG
           raise e
         end
@@ -108,7 +108,8 @@ module LinkedData
           req.url path
           custom_req(obj, file, file_attribute, req)
         end
-        raise Exception, response.body if response.status >= 500
+        raise StandardError, response.body if response.status >= 500
+
         if options[:raw] || false # return the unparsed body of the request
           return response.body
         else
@@ -122,7 +123,8 @@ module LinkedData
           req.url path
           custom_req(obj, file, file_attribute, req)
         end
-        raise Exception, response.body if response.status >= 500
+        raise StandardError, response.body if response.status >= 500
+
         recursive_struct(load_json(response.body))
       end
 
@@ -132,14 +134,16 @@ module LinkedData
           req.url path
           custom_req(obj, file, file_attribute, req)
         end
-        raise Exception, response.body if response.status >= 500
+        raise StandardError, response.body if response.status >= 500
+
         response
       end
 
       def self.delete(id)
         puts "Deleting #{id}" if $DEBUG
         response = conn.delete id
-        raise Exception, response.body if response.status >= 500
+        raise StandardError, response.body if response.status >= 500
+
         response
       end
 
