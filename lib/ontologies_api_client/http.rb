@@ -99,7 +99,7 @@ module LinkedData
         else
           responses = threaded_request(paths, params)
         end
-        return responses
+        responses
       end
 
       def self.post(path, obj, options = {})
@@ -133,12 +133,14 @@ module LinkedData
           custom_req(obj, file, file_attribute, req)
         end
         raise Exception, response.body if response.status >= 500
+        response
       end
 
       def self.delete(id)
         puts "Deleting #{id}" if $DEBUG
         response = conn.delete id
         raise Exception, response.body if response.status >= 500
+        response
       end
 
       def self.object_from_json(json)
