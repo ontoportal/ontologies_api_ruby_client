@@ -111,9 +111,9 @@ module LinkedData
         raise StandardError, response.body if response.status >= 500
 
         if options[:raw] || false # return the unparsed body of the request
-          return response.body
+          response.body
         else
-          return recursive_struct(load_json(response.body))
+          recursive_struct(load_json(response.body))
         end
       end
 
