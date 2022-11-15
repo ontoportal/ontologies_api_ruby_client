@@ -60,9 +60,15 @@ module LinkedData
         return url if values.nil? || values.empty?
         values = values.dup
         values = [values] unless values.is_a?(Array)
-        return url.gsub(/(\{.*?\})/) do
-          URI.escape(values.shift, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
+        escaped_value = URI.escape(values.shift, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
+        if url.match(/(\{.*?\})/)
+          url.gsub(/(\{.*?\})/) do
+            escaped_value
+          end
+        else
+          url + '/' + escaped_value
         end
+
       end
 
       def linkable_attributes
