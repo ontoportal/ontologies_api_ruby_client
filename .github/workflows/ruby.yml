@@ -9,7 +9,8 @@ name: Ruby
 
 on:
   push:
-  pull_request:
+  pull_request_target:
+    types: [opened, reopened]
 
 jobs:
   test:
