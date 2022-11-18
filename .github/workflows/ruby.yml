@@ -9,13 +9,15 @@ name: Ruby
 
 on:
   push:
-  pull_request:
+  pull_request_target:
+    types: [opened, reopened]
 
 jobs:
   test:
 
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         ruby-version: ['2.7', '3.0']
     steps:
