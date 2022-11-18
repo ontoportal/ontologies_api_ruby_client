@@ -6,7 +6,15 @@ module LinkedData
       attr_accessor :context, :links
 
       class << self
-        attr_accessor :media_type, :act_as_media_type, :include_attrs, :include_attrs_full, :attrs_always_present
+        attr_accessor :act_as_media_type, :include_attrs, :include_attrs_full, :attrs_always_present
+        def media_types
+          Array(@media_type)
+        end
+
+        def media_type
+          media_types.first
+        end
+
       end
 
       ##
