@@ -6,11 +6,9 @@ module LinkedData
     module Models
       class Class < LinkedData::Client::Base
         HTTP = LinkedData::Client::HTTP
-        @media_type = "http://www.w3.org/2002/07/owl#Class"
-        @include_attrs = "prefLabel,definition,synonym,obsolete,hasChildren"
+        @include_attrs = "prefLabel,definition,synonym,obsolete,hasChildren,inScheme,memberOf"
         @include_attrs_full = "prefLabel,definition,synonym,obsolete,properties,hasChildren,children"
         @attrs_always_present = :prefLabel, :definition, :synonym, :obsolete, :properties, :hasChildren, :children
-
         alias :fullId :id
 
         # triple store predicate is <http://www.w3.org/2002/07/owl#deprecated>
