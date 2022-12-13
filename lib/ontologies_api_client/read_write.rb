@@ -7,8 +7,7 @@ module LinkedData
 
       def save(options = {})
         resp = HTTP.post(self.class.collection_path, self.to_hash)
-        # cache_refresh_all allow to avoid to refresh everything, to make it faster when saving new submission
-        invalidate_cache(options[:cache_refresh_all] == false)
+        cache_refresh(options)
         resp
       end
 
@@ -16,9 +15,7 @@ module LinkedData
         values = options[:values] || changed_values()
         return if values.empty?
         resp = HTTP.patch(self.id, values)
-        # When updating submission we avoid refreshing all cache to avoid calling /submissions?display=all that takes a lot of time
-        invalidate_cache(options[:cache_refresh_all] == false)
-
+        cache_refresh(options)
         resp
       end
 
@@ -39,7 +36,7 @@ module LinkedData
       end
 
       def changed_values
-        existing = HTTP.get(self.id, include: "all")
+        existing = HTTP.get(self.id, include: 'all')
         changed_attrs = {}
         self.instance_variables.each do |var|
           var_sym = var[1..-1].to_sym
@@ -53,11 +50,16 @@ module LinkedData
 
       def delete
         resp = HTTP.delete(self.id)
-        invalidate_cache()
+        cache_refresh
         resp
       end
 
       private
+
+      def cache_refresh(options = {})
+        # cache_refresh_all allow to avoid to refresh everything, to make it faster when saving/updating a submission
+        invalidate_cache(options[:cache_refresh_all] || options[:cache_refresh_all].nil?)
+      end
 
       def equivalent?(current_value, new_value)
         # If we're comparing an existing embedded object
