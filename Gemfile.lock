@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ontologies_api_client (2.0.3)
+    ontologies_api_client (2.2.0)
       activesupport (= 6.1.5.1)
       excon
       faraday
@@ -67,4 +67,4 @@ DEPENDENCIES
   test-unit
 
 BUNDLED WITH
-   2.1.4
+   2.3.22
