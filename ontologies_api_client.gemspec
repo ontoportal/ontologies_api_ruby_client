@@ -10,9 +10,9 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.name          = "ontologies_api_client"
   gem.require_paths = ["lib"]
-  gem.version       = "2.0.3"
+  gem.version       = "2.2.0"
 
-  gem.add_dependency('activesupport', '6.0.4.1')
+  gem.add_dependency('activesupport', '6.1.5.1')
   gem.add_dependency('excon')
   gem.add_dependency('faraday')
   gem.add_dependency('faraday-excon', '~> 2.0.0')
