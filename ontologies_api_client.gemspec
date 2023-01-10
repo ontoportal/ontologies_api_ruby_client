@@ -13,6 +13,7 @@ Gem::Specification.new do |gem|
   gem.version       = "2.2.0"
 
   gem.add_dependency('activesupport', '6.1.5.1')
+  gem.add_dependency('addressable', '~> 2.8')
   gem.add_dependency('excon')
   gem.add_dependency('faraday')
   gem.add_dependency('faraday-excon', '~> 2.0.0')
