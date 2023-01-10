@@ -1,4 +1,4 @@
-require "uri"
+require 'addressable/template'
 require_relative "../base"
 
 module LinkedData
@@ -11,11 +11,13 @@ module LinkedData
         @media_type = "http://data.bioontology.org/metadata/Mapping"
 
         def self.find(id, params = {})
-          HTTP.get(mappings_url_prefix + URI.escape(id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]")), params)
+          template = Addressable::Template.new("#{mappings_url_prefix}/{mapping}")
+          HTTP.get(template.expand({mapping: id}), params)
         end
 
         def delete
-          HTTP.delete(mappings_url_prefix + URI.escape(self.id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]")))
+          template = Addressable::Template.new("#{mappings_url_prefix}/{mapping}")
+          HTTP.delete(template.expand({mapping: self.id}))
         end
 
         private
@@ -24,7 +26,7 @@ module LinkedData
         # This is in a method because the settings are configured after
         # the VM initialization, so the rest_url could be null or wrong
         def self.mappings_url_prefix
-          LinkedData::Client.settings.rest_url + "/mappings/"
+          LinkedData::Client.settings.rest_url + "/mappings"
         end
 
         def mappings_url_prefix
