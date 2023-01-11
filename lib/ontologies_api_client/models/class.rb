@@ -1,3 +1,4 @@
+require 'addressable/uri'
 require "uri"
 require_relative "../base"
 
@@ -47,8 +48,10 @@ module LinkedData
         def purl
           return "" if self.links.nil?
           return self.id if self.id.include?("purl.")
+
           ont = self.explore.ontology
-          "#{LinkedData::Client.settings.purl_prefix}/#{ont.acronym}?conceptid=#{URI.escape(self.id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}"
+          encoded_id = Addressable::URI.encode_component(self.id, Addressable::URI::CharacterClasses::UNRESERVED)
+          "#{LinkedData::Client.settings.purl_prefix}/#{ont.acronym}?conceptid=#{encoded_id}"
         end
 
         def ontology
