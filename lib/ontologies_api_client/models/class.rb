@@ -60,7 +60,7 @@ module LinkedData
 
         def self.find(id, ontology, params = {})
           ontology = HTTP.get(ontology, params)
-          ontology.explore.class(URI.escape(id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]")))
+          ontology.explore.single_class(id)
         end
 
         def self.search(*args)
