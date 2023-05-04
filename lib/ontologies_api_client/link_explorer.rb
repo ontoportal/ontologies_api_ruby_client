@@ -60,7 +60,7 @@ module LinkedData
         return url if values.nil? || values.empty?
         values = values.dup
         values = [values] unless values.is_a?(Array)
-        escaped_value = URI.escape(values.shift, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
+        escaped_value = CGI.escape(values.shift)
         if url.match(/(\{.*?\})/)
           url.gsub(/(\{.*?\})/) do
             escaped_value

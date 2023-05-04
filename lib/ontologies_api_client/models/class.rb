@@ -1,4 +1,4 @@
-require "uri"
+require "cgi"
 require_relative "../base"
 
 module LinkedData
@@ -47,7 +47,7 @@ module LinkedData
           return "" if self.links.nil?
           return self.id if self.id.include?("purl.")
           ont = self.explore.ontology
-          "#{LinkedData::Client.settings.purl_prefix}/#{ont.acronym}?conceptid=#{URI.escape(self.id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}"
+          "#{LinkedData::Client.settings.purl_prefix}/#{ont.acronym}?conceptid=#{CGI.escape(self.id)}"
         end
 
         def ontology
@@ -56,7 +56,7 @@ module LinkedData
 
         def self.find(id, ontology, params = {})
           ontology = HTTP.get(ontology, params)
-          ontology.explore.class(URI.escape(id, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]")))
+          ontology.explore.class(CGI.escape(id))
         end
 
         def self.search(*args)
