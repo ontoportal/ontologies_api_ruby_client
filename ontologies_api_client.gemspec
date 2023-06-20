@@ -14,7 +14,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.name          = 'ontologies_api_client'
   gem.require_paths = ['lib']
-  gem.version       = '2.2.1'
+  gem.version       = '2.2.2'
 
   gem.add_dependency('activesupport', '6.1.7.3')
   gem.add_dependency('addressable', '~> 2.8')
