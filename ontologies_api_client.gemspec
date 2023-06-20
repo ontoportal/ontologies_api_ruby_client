@@ -20,7 +20,6 @@ Gem::Specification.new do |gem|
   gem.add_dependency('addressable', '~> 2.8')
   gem.add_dependency('excon')
   gem.add_dependency('faraday')
-  #gem.add_dependency('faraday-excon', '~> 2.1.0')
   gem.add_dependency('faraday-excon')
   gem.add_dependency('faraday-multipart')
   gem.add_dependency('lz4-ruby')
