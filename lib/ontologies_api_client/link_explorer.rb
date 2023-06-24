@@ -1,4 +1,4 @@
-require 'uri'
+require 'addressable/uri'
 require_relative 'http'
 
 module LinkedData
@@ -58,10 +58,11 @@ module LinkedData
 
       def replace_template_elements(url, values = [])
         return url if values.nil? || values.empty?
+
         values = values.dup
         values = [values] unless values.is_a?(Array)
         return url.gsub(/(\{.*?\})/) do
-          URI.escape(values.shift, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
+          Addressable::URI.encode_component(values.shift, Addressable::URI::CharacterClasses::UNRESERVED)
         end
       end
 
