@@ -9,5 +9,6 @@ LinkedData::Client.config do |config|
   config.apikey     = ENV['UT_APIKEY']
 #  config.apikey     = 'xxxxx-xxxxx-xxxxxxxxxx'
   config.links_attr = 'links'
+  config.purl_prefix = 'https://purl.bioontology.org/ontology'
   config.cache      = false
 end
