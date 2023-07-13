@@ -75,7 +75,7 @@ module LinkedData
         faraday.headers = {
           'Accept' => 'application/json',
           'Authorization' => "apikey token=#{@settings.apikey}",
-          'User-Agent' => 'NCBO API Ruby Client v0.1.0'
+          'User-Agent' => "NCBO API Ruby Client v#{LinkedData::Client::VERSION}"
         }
       end
       @settings_run_connection = true
