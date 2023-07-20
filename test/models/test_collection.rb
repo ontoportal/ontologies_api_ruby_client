@@ -20,13 +20,13 @@ class CollectionTest < LinkedData::Client::TestCase
   def test_class_for_type
     media_type = 'http://data.bioontology.org/metadata/Category'
     type_cls = LinkedData::Client::Base.class_for_type(media_type)
-    assert type_cls == LinkedData::Client::Models::Category
+    assert_equal LinkedData::Client::Models::Category, type_cls
   end
 
   def test_find_by
     bro = TestOntology.find_by_acronym('BRO')
     assert bro.length >= 1
-    assert bro.any? { |o| o.acronym.eql?('BRO') }
+    assert(bro.any? { |o| o.acronym.eql?('BRO') })
 
     onts = TestOntology.find_by_hasDomain_and_doNotUpdate('https://data.bioontology.org/categories/Health', true)
     assert onts.length >= 1
@@ -42,6 +42,6 @@ class CollectionTest < LinkedData::Client::TestCase
 
   def test_find
     ont = TestOntology.find('https://data.bioontology.org/ontologies/SNOMEDCT')
-    assert !ont.nil?
+    refute_nil ont
   end
 end
