@@ -14,7 +14,7 @@ class ClassTest < LinkedData::Client::TestCase
     assert_equal 'http://www.w3.org/2002/07/owl#Class', cls.type
     assert_equal 'Activity', cls.prefLabel
     assert_equal ontology, cls.links['ontology']
-    assert_true cls.hasChildren
+    assert cls.hasChildren
   end
 
   # Test PURL generation for a class in an OWL format ontology
