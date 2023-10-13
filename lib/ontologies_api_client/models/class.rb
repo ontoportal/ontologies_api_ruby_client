@@ -14,12 +14,12 @@ module LinkedData
 
         # triple store predicate is <http://www.w3.org/2002/07/owl#deprecated>
         def obsolete?
-          self.obsolete
+          self.obsolete && self.obsolete.to_s.eql?("true")
         end
 
         def prefLabel(options = {})
           if options[:use_html]
-            if self.obsolete
+            if obsolete?
               return "<span class='obsolete_class' title='obsolete class'>#{@prefLabel}</span>"
             else
               return "<span class='prefLabel'>#{@prefLabel}</span>"
