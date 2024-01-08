@@ -34,4 +34,4 @@ jobs:
     - name: Run tests
       env:
         UT_APIKEY: ${{ secrets.UT_APIKEY }}
-      run: bundle exec rake test
+      run: bundle exec rake test TESTOPTS="-v"
