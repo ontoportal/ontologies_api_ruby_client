@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'lib/ontologies_api_client/version'
+
 Gem::Specification.new do |gem|
   gem.authors       = ['Paul R Alexander']
   gem.email         = ['support@bioontology.org']
@@ -14,7 +16,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.name          = 'ontologies_api_client'
   gem.require_paths = ['lib']
-  gem.version       = '2.2.2'
+  gem.version       = LinkedData::Client::VERSION
 
   gem.add_dependency('activesupport', '6.1.7.3')
   gem.add_dependency('addressable', '~> 2.8')
@@ -26,4 +28,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency('multi_json')
   gem.add_dependency('oj')
   gem.add_dependency('spawnling', '2.1.5')
+
+  gem.add_development_dependency('faraday-follow_redirects', '~> 0.3')
+  gem.add_development_dependency('minitest', '~> 5.18')
 end
