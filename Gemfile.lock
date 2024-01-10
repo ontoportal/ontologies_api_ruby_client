@@ -47,6 +47,8 @@ GEM
     lz4-ruby (0.3.3)
     method_source (1.0.0)
     minitest (5.20.0)
+    minitest-hooks (1.5.1)
+      minitest (> 5.3)
     multi_json (1.15.0)
     multipart-post (2.3.0)
     oj (3.16.1)
@@ -92,6 +94,7 @@ PLATFORMS
 DEPENDENCIES
   faraday-follow_redirects (~> 0.3)
   minitest (~> 5.20)
+  minitest-hooks (~> 1.5)
   ontologies_api_client!
   pry
   rake
