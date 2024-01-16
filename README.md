@@ -1,10 +1,11 @@
 # ontologies_api_client
 
-Models and serializers for ontologies and related artifacts backed by a [4store](https://github.com/4store/4store) 
-RDF database. This library can be used for interacting with a 4store instance that stores 
-[BioPortal](https://bioportal.bioontology.org/) ontology data. Models in the library are based on 
-[Graph Oriented Objects for Ruby (Goo)](https://github.com/ncbo/goo). Serializers support RDF serialization as 
-Rack Middleware and automatic generation of hypermedia links.
+Models and serializers for ontologies and related artifacts backed by an 
+[AllegroGraph](https://allegrograph.com/products/allegrograph/) or a [4store](https://github.com/4store/4store) 
+database. This library can be used for interacting with an AllegroGraph or a 4store instance that 
+stores [BioPortal](https://bioportal.bioontology.org/) ontology data. Models in the library are based on 
+[Graph Oriented Objects for Ruby (Goo)](https://github.com/ncbo/goo). Serializers support RDF serialization as Rack Middleware and automatic 
+generation of hypermedia links.
 
 ## Install
 
