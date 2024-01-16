@@ -5,10 +5,10 @@ require_relative 'lib/ontologies_api_client/version'
 Gem::Specification.new do |gem|
   gem.authors       = ['Paul R Alexander']
   gem.email         = ['support@bioontology.org']
-  gem.description   = 'Models and serializers for ontologies and related artifacts backed by 4store'
-  gem.summary       = 'This library can be used for interacting with a 4store instance that stores NCBO-based ' \
-                      'ontology information. Models in the library are based on Goo. Serializers support RDF ' \
-                      'serialization as Rack Middleware and automatic generation of hypermedia links.'
+  gem.description   = 'Models and serializers for ontologies and related artifacts backed by an RDF database'
+  gem.summary       = 'This library can be used for interacting with an AllegroGraph or 4store instance that stores ' \
+                      'BioPortal-based ontology information. Models in the library are based on Goo. Serializers ' \
+                      'support RDF serialization as Rack Middleware and automatic generation of hypermedia links.'
   gem.homepage      = 'https://github.com/ncbo/ontologies_api_ruby_client'
 
   gem.files         = `git ls-files`.split($\)
