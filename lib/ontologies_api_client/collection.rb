@@ -73,13 +73,11 @@ module LinkedData
           end
         end
 
-        ##
         # Find a resource by id
+        #
+        # @deprecated Use {#get} instead
         def find(id, params = {})
-          found = where do |obj|
-            obj.id.eql?(id)
-          end
-          found.first
+          get(id, params)
         end
 
         ##
