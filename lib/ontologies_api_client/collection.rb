@@ -85,6 +85,8 @@ module LinkedData
         ##
         # Get a resource by id (this will retrieve it from the REST service)
         def get(id, params = {})
+          path = collection_path
+          id = "#{path}/#{id}" unless id.include?(path)
           HTTP.get(id, params)
         end
 
