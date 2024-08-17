@@ -38,6 +38,8 @@ end
 module LinkedData
   module Client
     module HTTP
+      $DEBUG_API_CLIENT ||= false
+
       class Link < String
         attr_accessor :media_type;
       end
