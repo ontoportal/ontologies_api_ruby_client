@@ -54,11 +54,6 @@ module LinkedData
           return administeredBy.any? { |u| u == user.id }
         end
 
-        def invalidate_cache(cache_refresh_all = true)
-          self.class.all(invalidate_cache: true, include_views: true)
-          super(cache_refresh_all)
-        end
-
         # ACL with administrators
         def full_acl
           ((self.acl || []) + self.administeredBy).uniq
