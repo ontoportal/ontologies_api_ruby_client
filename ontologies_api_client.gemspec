@@ -27,9 +27,8 @@ Gem::Specification.new do |gem|
   gem.add_dependency('lz4-ruby')
   gem.add_dependency('multi_json')
   gem.add_dependency('oj')
-  gem.add_dependency('spawnling', '2.1.5')
 
   gem.add_development_dependency('faraday-follow_redirects', '~> 0.3')
-  gem.add_development_dependency('minitest', '~> 5.20')
+  gem.add_development_dependency('minitest', '~> 5.25')
   gem.add_development_dependency('minitest-hooks', '~> 1.5')
 end
