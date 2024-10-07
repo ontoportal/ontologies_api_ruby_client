@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ontologies_api_client (2.2.4)
+    ontologies_api_client (2.2.2)
       activesupport (= 6.1.7.3)
       addressable (~> 2.8)
       excon
@@ -34,8 +34,6 @@ GEM
     faraday-excon (2.1.0)
       excon (>= 0.27.4)
       faraday (~> 2.0)
-    faraday-follow_redirects (0.3.0)
-      faraday (>= 1, < 3)
     faraday-multipart (1.0.4)
       multipart-post (~> 2)
     faraday-net_http (3.0.2)
@@ -51,6 +49,7 @@ GEM
     parallel (1.22.1)
     parser (3.2.0.0)
       ast (~> 2.4.1)
+    power_assert (2.0.3)
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -74,6 +73,8 @@ GEM
     ruby-progressbar (1.11.0)
     ruby2_keywords (0.0.5)
     spawnling (2.1.5)
+    test-unit (3.5.7)
+      power_assert
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.4.2)
@@ -86,12 +87,11 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  faraday-follow_redirects (~> 0.3)
-  minitest (~> 5.18)
   ontologies_api_client!
   pry
   rake
   rubocop (~> 1.43)
+  test-unit
 
 BUNDLED WITH
    2.3.22
