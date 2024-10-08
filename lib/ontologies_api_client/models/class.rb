@@ -47,7 +47,7 @@ module LinkedData
 
         def purl
           return "" if self.links.nil?
-          return self.id if self.id.include? LinkedData::Client.settings[:purl_host]
+          return self.id if self.id.include?("purl.")
 
           ont = self.explore.ontology
           encoded_id = Addressable::URI.encode_component(self.id, Addressable::URI::CharacterClasses::UNRESERVED)
