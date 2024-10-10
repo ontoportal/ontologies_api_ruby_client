@@ -38,6 +38,8 @@ end
 module LinkedData
   module Client
     module HTTP
+      $DEBUG_API_CLIENT ||= false
+
       class Link < String
         attr_accessor :media_type;
       end
@@ -61,7 +63,7 @@ module LinkedData
         invalidate_cache = params.delete(:invalidate_cache) || false
 
         begin
-          puts "Getting: #{path} with #{params}" if $DEBUG
+          puts "Getting: #{path} with #{params}" if $DEBUG_API_CLIENT
           begin
             response = conn.get do |req|
               req.url path
@@ -87,7 +89,7 @@ module LinkedData
             obj = recursive_struct(load_json(response.body))
           end
         rescue StandardError => e
-          puts "Problem getting #{path}" if $DEBUG
+          puts "Problem getting #{path}" if $DEBUG_API_CLIENT
           raise e
         end
         obj
@@ -143,7 +145,7 @@ module LinkedData
       end
 
       def self.delete(id)
-        puts "Deleting #{id}" if $DEBUG
+        puts "Deleting #{id}" if $DEBUG_API_CLIENT
         response = conn.delete id
         raise StandardError, response.body if response.status >= 500
 

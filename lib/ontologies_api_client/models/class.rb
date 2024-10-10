@@ -7,7 +7,7 @@ module LinkedData
     module Models
       class Class < LinkedData::Client::Base
         HTTP = LinkedData::Client::HTTP
-        @media_type = "http://www.w3.org/2002/07/owl#Class"
+        @media_type = %w[http://www.w3.org/2002/07/owl#Class http://www.w3.org/2004/02/skos/core#Concept]
         @include_attrs = "prefLabel,definition,synonym,obsolete,hasChildren"
         @include_attrs_full = "prefLabel,definition,synonym,obsolete,properties,hasChildren,children"
         @attrs_always_present = :prefLabel, :definition, :synonym, :obsolete, :properties, :hasChildren, :children
@@ -47,7 +47,7 @@ module LinkedData
 
         def purl
           return "" if self.links.nil?
-          return self.id if self.id.include?("purl.")
+          return self.id if self.id.include? LinkedData::Client.settings[:purl_host]
 
           ont = self.explore.ontology
           encoded_id = Addressable::URI.encode_component(self.id, Addressable::URI::CharacterClasses::UNRESERVED)

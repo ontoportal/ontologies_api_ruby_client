@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby-version: ['2.7', '3.0']
+        ruby-version: ['3.0', '3.1']
     steps:
     - uses: actions/checkout@v3
     - name: Set up Ruby
@@ -34,4 +34,4 @@ jobs:
     - name: Run tests
       env:
         UT_APIKEY: ${{ secrets.UT_APIKEY }}
-      run: bundle exec rake test
+      run: bundle exec rake test TESTOPTS="-v"
