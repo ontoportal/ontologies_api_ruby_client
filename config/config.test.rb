@@ -10,7 +10,7 @@ LinkedData::Client.config do |config|
   config.debug_client_keys = []
   config.federated_portals = {
     bioportal: {
-      api: 'https://data.agroportal.lirmm.fr/',
+      api: 'https://data.agroportal.eu/',
       apikey: '1de0a270-29c5-4dda-b043-7c3580628cd5',
       color: '#234979',
     },
@@ -25,7 +25,7 @@ LinkedData::Client.config do |config|
     #   color: '#1e2251',
     # },
     biodivportal: {
-      api: 'https://data.biodivportal.gfbio.dev/',
+      api: 'https://data.biodivportal.gfbio.org/',
       apikey: "47a57aa3-7b54-4f34-b695-dbb5f5b7363e",
       color: '#1e2251',
     }
