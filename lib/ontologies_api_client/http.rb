@@ -73,7 +73,7 @@ module LinkedData
                 req.url path
                 req.params = params.dup
                 req.options[:timeout] = 30
-                req.headers.merge(headers)
+                req.headers.merge!(headers)
                 req.headers[:invalidate_cache] = invalidate_cache
               end
             end
@@ -173,7 +173,7 @@ module LinkedData
         if file
           # multipart
           boundary = "OntologiesAPIMultipartPost"
-          req.headers['Content-Type'] = "multipart/mixed; boundary=#{boundary}; type=application/json; start=json"
+          req.headers['Content-Type'] = "multipart/mixed; boundary=#{boundary}; type=\"application/json\"; start=json"
           parts = []
           parts << Faraday::Parts::Part.new(boundary, "json\"\r\nContent-Type: \"application/json; charset=UTF-8", MultiJson.dump(obj))
           parts << Faraday::Parts::Part.new(boundary, file_attribute, file)

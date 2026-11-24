@@ -6,6 +6,11 @@ require 'request_store'
 
 class FederationTest < LinkedData::Client::TestCase
 
+  # Some tests federate globally through RequestStore; don't leak it into the next one
+  def teardown
+    RequestStore.clear!
+  end
+
   def test_federated_ontologies_all
     ontologies = []
     time1 = Benchmark.realtime do
