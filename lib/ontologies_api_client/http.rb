@@ -73,7 +73,7 @@ module LinkedData
                 req.url path
                 req.params = params.dup
                 req.options[:timeout] = 30
-                req.headers.merge(headers)
+                req.headers.merge!(headers)
                 req.headers[:invalidate_cache] = invalidate_cache
               end
             end
