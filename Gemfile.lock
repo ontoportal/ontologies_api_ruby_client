@@ -73,7 +73,7 @@ GEM
       coderay (~> 1.1)
       method_source (~> 1.0)
     public_suffix (5.1.1)
-    rack (3.1.9)
+    rack (3.2.9)
     rake (13.2.1)
     request_store (1.7.0)
       rack (>= 1.4)
@@ -100,6 +100,7 @@ PLATFORMS
 DEPENDENCIES
   ontologies_api_client!
   pry
+  rack (~> 3.2.9)
   rake
   test-unit
   webmock
