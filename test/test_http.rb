@@ -57,4 +57,19 @@ class HTTPTest < LinkedData::Client::TestCase
 
     assert_equal 'yes', sent_headers['X-Custom']
   end
+
+  def test_failed_get_leaves_the_path_untouched
+    # Callers pass shared strings: the catalog passes settings.rest_url itself
+    api_url = 'http://api.test'
+    path = +api_url
+    stubs = Faraday::Adapter::Test::Stubs.new
+    stubs.get('/') { raise Faraday::ConnectionFailed, 'connection refused' }
+    connection = Faraday.new { |f| f.adapter :test, stubs }
+
+    assert_raise(Faraday::ConnectionFailed) do
+      LinkedData::Client::HTTP.get(path, { display: 'title' }, connection: connection)
+    end
+
+    assert_equal api_url, path
+  end
 end

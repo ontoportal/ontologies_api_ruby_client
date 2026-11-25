@@ -80,7 +80,8 @@ module LinkedData
             log "Getting: #{path} with #{params} (t: #{time}s - cache: #{response.headers["X-Rack-Cache"]})" if $DEBUG_API_CLIENT
           rescue Exception => e
             params = Faraday::Utils.build_query(params)
-            path << "?" unless params.empty? || path.include?("?")
+            # A copy, never path itself: callers pass shared strings such as settings.rest_url
+            path = "#{path}?" unless params.empty? || path.include?("?")
             raise e, "Problem retrieving:\n#{path}#{params}\n\nError: #{e.message}\n#{e.backtrace.join("\n\t")}"
           end
 
